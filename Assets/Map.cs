@@ -7,16 +7,16 @@ public class Map : MonoBehaviour
     public GameObject playerPrefab;
     public GameObject cratePrefab;
     public GameObject placePrefab;
+    public GameObject wallPrefab;
     public MeshFilter wallsMeshFilter;
 
     public Grid grid__;
     Grid __grid;
+    public Grid grid { get { return __grid; } }
 
 
     // Musi być Vector3 bo dużo metod unity używa właśnie Vector3 zamiast Vector2
     public Vector3Int playerPosition;
-
-    public Transform test;
 
     // O - wall
     // P - Player
@@ -39,16 +39,17 @@ public class Map : MonoBehaviour
 
     void Start()
     {
-        GenerateWalls();
+        //GenerateWalls();
+        GenerateMap();
     }
 
     // Update is called once per frame
     void Update()
     {
-        test.position = __grid.CellToWorld(playerPosition);
+
     }
 
-    public enum CollisionInfo { Cannot, Crate, Nothing}
+    public enum CollisionInfo { Wall, CrateWall, Crate, Free}
 
     /// <summary>
     /// Only dirrection is needed cause map stores player position anyways
@@ -56,7 +57,7 @@ public class Map : MonoBehaviour
     /// <returns>Whether object can perform movement or not</returns>
     public CollisionInfo AttemptMovement(Vector2Int dirrection) //<NOT IMPLEMENTED>
     {
-        return CollisionInfo.Nothing;
+        return CollisionInfo.Free;
     }
 
     public void EnlistCrate(Crate crate)
@@ -67,6 +68,33 @@ public class Map : MonoBehaviour
     public void GenerateMap() //<NOT IMPLEMENTED>
     {
         // Cała magia dzieje się tutaj, ustawiane są skrzynie, platformy, gracz, oraz generowany jest mesh ścian
+        Vector3Int gridPosition;
+        Vector2Int mapSize = new Vector2Int(map.GetUpperBound(1), map.GetUpperBound(0));
+        for (int y = 0; y <= mapSize.y; y++)
+            for (int x = 0; x <= mapSize.x; x++)
+            {
+                gridPosition = new Vector3Int(x, -y, 0);
+                switch(map[y, x])
+                {
+                    case 'O':
+                        Instantiate<GameObject>(wallPrefab, grid.CellToWorld(gridPosition), Quaternion.identity, transform);
+                        break;
+                    case 'P':
+                        Instantiate<GameObject>(playerPrefab, grid.CellToWorld(gridPosition), Quaternion.identity, transform);
+                        break;
+                    case 'C':
+                        Instantiate<GameObject>(cratePrefab, grid.CellToWorld(gridPosition), Quaternion.identity, transform);
+                        break;
+                    case 'X':
+                        Instantiate<GameObject>(placePrefab, grid.CellToWorld(gridPosition), Quaternion.identity, transform);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+        // Tutaj wycentrowywana jest kamera
+        Camera.main.transform.position = new Vector3(mapSize.x / 2f, 6, -mapSize.y / 2f);
     }
 
     public void LoadMapFromFile() //<NOT IMPLEMENTED>
@@ -77,8 +105,8 @@ public class Map : MonoBehaviour
     // Mógłbym w tym miejscu posilić się o greedy-mesh, ale sądzę że nawet jeśli będą obecne zbędne współliniowe wierzchołki to dalej będzie to
     // bardziej optymalne od tego żeby każda ściana była odrębnym obiektem.
     // Update: o ile współliniowe wierzchołki chyba nikomu nie przeszkadzają, ale takie rzeczy jak kilka vertexów w tym samym miejscu już 
-    // robią, że oświetlenie obiektu szleje
-    public void GenerateWalls()
+    // robią, że oświetlenie obiektu szaleje
+    public void GenerateWalls() // <Broken>
     {
         Mesh wallsMesh = new Mesh();
 
