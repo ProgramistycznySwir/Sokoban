@@ -85,6 +85,9 @@ public class Map : MonoBehaviour
                 gridPosition = new Vector3Int(x, -y, 0);
                 switch(map[y, x])
                 {
+                    case 'O':
+                        Instantiate<GameObject>(wallPrefab, grid.CellToWorld(gridPosition), Quaternion.identity, transform);
+                        break;
                     case 'P':
                         Instantiate<GameObject>(playerPrefab, grid.CellToWorld(gridPosition), Quaternion.identity, transform);
                         break;
@@ -232,9 +235,38 @@ public class Map : MonoBehaviour
         // Dla oświetlenia
         //wallsMesh.RecalculateNormals();
         // Jak nie prośbą to groźbą...
+        //wallsMesh.SetNormals(normals);
+
+        wallsMesh.RecalculateNormals();
+        Vector3[] test = wallsMesh.normals;
+
+        for (int i = 0; i < test.Length; i++)
+        {
+            //if(i % 2 == 1)
+            //    test
+
+            if (test[i].x > 0)
+                test[i].x = 1;
+            else if (test[i].x < 0)
+                test[i].x = -1;
+
+            if (test[i].y > 0)
+                test[i].y = 1;
+            else if (test[i].y < 0)
+                test[i].y = -1;
+
+            if (test[i].z > 0)
+                test[i].z = 1;
+            else if (test[i].z < 0)
+                test[i].z = -1;
+        }
+
         wallsMesh.SetNormals(normals);
 
-        wallsMesh.SetUVs(0, uvs);
+        for (int i = 0; i < test.Length; i++)
+            Debug.DrawLine(verts[i], verts[i] + test[i], Color.red);
+
+        //wallsMesh.SetUVs(0, normals);
 
         // Aplikowanie przygotowanej siatki do sceny
         wallsMeshFilter.mesh = wallsMesh;
