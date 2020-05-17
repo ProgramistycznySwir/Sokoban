@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Map : MonoBehaviour
 {
+    // <NOTE> To będzie można sparametryzować i wrzucić do ustawień
+    public static float wallHeight = 1f;
+
     public GameObject playerPrefab;
     public GameObject cratePrefab;
     public GameObject placePrefab;
@@ -35,11 +38,17 @@ public class Map : MonoBehaviour
             { 'O', ' ', 'C', 'O' },
             { 'O', ' ', ' ', 'O' },
             { 'O', 'O', 'O', 'O' }};
+
+        //map = new char[,]{ { ' ', ' ', ' ', ' ' },
+        //                   { ' ', 'O', 'O', ' ' },
+        //                   { ' ', 'O', 'O', ' ' },
+        //                   { ' ', 'O', 'O', ' ' },
+        //                   { ' ', ' ', ' ', ' ' }};
     }
 
     void Start()
     {
-        //GenerateWalls();
+        GenerateWalls();
         GenerateMap();
     }
 
@@ -76,9 +85,6 @@ public class Map : MonoBehaviour
                 gridPosition = new Vector3Int(x, -y, 0);
                 switch(map[y, x])
                 {
-                    case 'O':
-                        Instantiate<GameObject>(wallPrefab, grid.CellToWorld(gridPosition), Quaternion.identity, transform);
-                        break;
                     case 'P':
                         Instantiate<GameObject>(playerPrefab, grid.CellToWorld(gridPosition), Quaternion.identity, transform);
                         break;
@@ -105,108 +111,132 @@ public class Map : MonoBehaviour
     // Mógłbym w tym miejscu posilić się o greedy-mesh, ale sądzę że nawet jeśli będą obecne zbędne współliniowe wierzchołki to dalej będzie to
     // bardziej optymalne od tego żeby każda ściana była odrębnym obiektem.
     // Update: o ile współliniowe wierzchołki chyba nikomu nie przeszkadzają, ale takie rzeczy jak kilka vertexów w tym samym miejscu już 
-    // robią, że oświetlenie obiektu szaleje
-    public void GenerateWalls() // <Broken>
+    // robią, że oświetlenie obiektu szaleje ;/
+    // Update: udało mi się jako tako naprawić oświetlenie i jest... ummm... stylistyczne? Znaczy no, nie jest źle, ale niektóre krawędzie
+    // szczególnie te dobrze doświetlone są troche rozmazane.
+    public void GenerateWalls()
     {
         Mesh wallsMesh = new Mesh();
 
+        // Vertex'y - punkty na których później się "rozpina" trójkąty z których składa się siatka obiektu
         List<Vector3> verts = new List<Vector3>();
-        List<int> tris = new List<int>();
-        
-        int wallsCount = 0;
-        for(int y = 0; y <= map.GetUpperBound(0); y++)
-            for(int x = 0; x <= map.GetUpperBound(1); x++)
+
+        // Pierwszy submesh - podłoga
+        List<int> tris0 = new List<int>();
+        // Drugi submesh - ściany
+        List<int> tris1 = new List<int>();
+
+        // Normal'e - kierunki w które skierowane są powierzchnie trójkątów, potrzebne są do odpowiedniego oświetlenia obiektu
+        List<Vector3> normals = new List<Vector3>();
+        List<Vector2> uvs = new List<Vector2>();
+
+        //int wallsCount = 0;
+        Vector2Int mapSize = new Vector2Int(map.GetUpperBound(1), map.GetUpperBound(0));
+        // Najpierw dodawane są vertexy, a dopiero w kolejnej pętli dodawane są trójkąty
+        for (int y = 0; y <= mapSize.y + 1; y++)
+            for(int x = 0; x <= mapSize.x + 1; x++)
             {
-                if (map[y, x] != 'O')
-                    continue;
+                // Vertexy niżej są parzyste, a wyżej nie parzyste
+                // Powoduje to wystąpienie sporej ilości (n <= (mapSize.x+1)*(mapSize.y+1)) nie potrzebnych punktów, ale jest to rozwiązanie
+                // wystarczająco optymalne (pojedyńcza skrzynka posiada nieco mniej vertex'ów co mapa 14x14).
+                verts.Add(new Vector3(x, 0, -y));
+                verts.Add(new Vector3(x, wallHeight, -y));
 
-                // Góra - zgodnie do wskazówek zegara zaczynając od lewego bliższego rogu
-                verts.Add(new Vector3(x, 0, y));
-                verts.Add(new Vector3(x, 0, y + 1));
-                verts.Add(new Vector3(x + 1, 0, y + 1));
-                verts.Add(new Vector3(x + 1, 0, y));
+                normals.Add(Vector3.up);
+                normals.Add(Vector3.up);
 
-                // Dół - zgodnie do wskazówek zegara zaczynając od lewego bliższego rogu
-                // Te -2 definiuje że ściana będzie się chować jeszcze 1 unit pod powierzchnię planszy.
-                // Nie wiem czy to jest potrzebne, ale nie wiem czy nie zaczną się dziwne zachowania cieni jeśli ściana będzie choć odrobinę wystawać.
-                verts.Add(new Vector3(x, -2, y));
-                verts.Add(new Vector3(x, -2, y + 1));
-                verts.Add(new Vector3(x + 1, -2, y + 1));
-                verts.Add(new Vector3(x + 1, -2, y));
-
-                // Górna ściana
-                // Tutaj ustawiane są indeksy wierzchołków trójkątów (3 kolejne int'y w liście), żeby trójkąt miał normalną skierowaną w naszą stronę
-                // wierzchołki muszą być ustawione w kierunku wskazówek zegara
-                tris.Add(wallsCount);
-                tris.Add(wallsCount + 1);
-                tris.Add(wallsCount + 2);
-
-                tris.Add(wallsCount + 2);
-                tris.Add(wallsCount + 3);
-                tris.Add(wallsCount);
-
-                // Lewa ściana
-                if (!(x > 0 && map[y, x - 1] == 'O'))
+                uvs.Add(new Vector2(x, -y));
+                uvs.Add(new Vector2(x, -y + 1));
+            }
+        for (int y = 0; y <= mapSize.y; y++)
+            for (int x = 0; x <= mapSize.x; x++)
+            {
+                if (map[y, x] == 'O')
                 {
-                    tris.Add(wallsCount);
-                    tris.Add(wallsCount + 4);
-                    tris.Add(wallsCount + 5);
+                    // Górna
+                    tris1.Add((y * (mapSize.x + 2) + x) * 2 + 1);
+                    tris1.Add((y * (mapSize.x + 2) + (x + 1)) * 2 + 1);
+                    tris1.Add(((y + 1) * (mapSize.x + 2) + x) * 2 + 1);
 
-                    tris.Add(wallsCount + 5);
-                    tris.Add(wallsCount + 1);
-                    tris.Add(wallsCount);
+                    tris1.Add((y * (mapSize.x + 2) + (x + 1)) * 2 + 1);
+                    tris1.Add(((y + 1) * (mapSize.x + 2) + (x + 1)) * 2 + 1);
+                    tris1.Add(((y + 1) * (mapSize.x + 2) + x) * 2 + 1);
+
+                    // Przednia
+                    if(y == mapSize.y || map[y+1, x] != 'O')
+                    {
+                        tris1.Add(((y + 1) * (mapSize.x + 2) + x) * 2 + 1);
+                        tris1.Add(((y + 1) * (mapSize.x + 2) + (x + 1)) * 2 + 1);
+                        tris1.Add(((y + 1) * (mapSize.x + 2) + x) * 2);
+
+                        tris1.Add(((y + 1) * (mapSize.x + 2) + x) * 2);
+                        tris1.Add(((y + 1) * (mapSize.x + 2) + (x + 1)) * 2 + 1);
+                        tris1.Add(((y + 1) * (mapSize.x + 2) + (x + 1)) * 2);
+                    }
+
+                    // Tylna
+                    if (y == 0 || map[y - 1, x] != 'O')
+                    {
+                        tris1.Add((y * (mapSize.x + 2) + (x + 1)) * 2 + 1);
+                        tris1.Add((y * (mapSize.x + 2) + x) * 2 + 1);
+                        tris1.Add((y * (mapSize.x + 2) + x) * 2);
+
+                        tris1.Add((y * (mapSize.x + 2) + x) * 2);
+                        tris1.Add((y * (mapSize.x + 2) + (x + 1)) * 2);
+                        tris1.Add((y * (mapSize.x + 2) + (x + 1)) * 2 + 1);
+                    }
+
+                    // Prawa
+                    if (x == mapSize.x || map[y, x + 1] != 'O')
+                    {
+                        tris1.Add(((y + 1) * (mapSize.x + 2) + (x + 1)) * 2 + 1);
+                        tris1.Add((y * (mapSize.x + 2) + (x + 1)) * 2 + 1);
+                        tris1.Add((y * (mapSize.x + 2) + (x + 1)) * 2);
+
+                        tris1.Add((y * (mapSize.x + 2) + (x + 1)) * 2);
+                        tris1.Add(((y + 1) * (mapSize.x + 2) + (x + 1)) * 2);
+                        tris1.Add(((y + 1) * (mapSize.x + 2) + (x + 1)) * 2 + 1);
+                    }
+
+                    // Lewa
+                    if (x == 0 || map[y, x - 1] != 'O')
+                    {
+                        tris1.Add((y * (mapSize.x + 2) + x) * 2 + 1);
+                        tris1.Add(((y + 1) * (mapSize.x + 2) + x) * 2 + 1);
+                        tris1.Add(((y + 1) * (mapSize.x + 2) + x) * 2);
+
+                        tris1.Add(((y + 1) * (mapSize.x + 2) + x) * 2);
+                        tris1.Add((y * (mapSize.x + 2) + x) * 2);
+                        tris1.Add((y * (mapSize.x + 2) + x) * 2 + 1);
+                    }
                 }
-                // Prawa ściana
-                if (!(x < map.GetUpperBound(1) && map[y, x + 1] == 'O'))
+                else
                 {
-                    tris.Add(wallsCount + 2);
-                    tris.Add(wallsCount + 6);
-                    tris.Add(wallsCount + 7);
+                    // Dolna
+                    tris0.Add( (y * (mapSize.x + 2) + x ) * 2 );
+                    tris0.Add( (y * (mapSize.x + 2) + (x + 1)) * 2 );
+                    tris0.Add( ((y + 1) * (mapSize.x + 2) + x) * 2 );
 
-                    tris.Add(wallsCount + 7);
-                    tris.Add(wallsCount + 3);
-                    tris.Add(wallsCount + 2);
+                    tris0.Add((y * (mapSize.x + 2) + (x + 1)) * 2);
+                    tris0.Add(((y + 1) * (mapSize.x + 2) + (x + 1)) * 2);
+                    tris0.Add(((y + 1) * (mapSize.x + 2) + x) * 2);
                 }
-                // Bliska ściana
-                if (!(y > 0 && map[y - 1, x] == 'O'))
-                {
-                    tris.Add(wallsCount);
-                    tris.Add(wallsCount + 3);
-                    tris.Add(wallsCount + 7);
-
-                    tris.Add(wallsCount + 7);
-                    tris.Add(wallsCount + 4);
-                    tris.Add(wallsCount);
-                }
-                // Dalsza ściana
-                if (!(y < map.GetUpperBound(0) && map[y + 1, x] == 'O'))
-                {
-                    tris.Add(wallsCount + 1);
-                    tris.Add(wallsCount + 5);
-                    tris.Add(wallsCount + 6);
-
-                    tris.Add(wallsCount + 6);
-                    tris.Add(wallsCount + 2);
-                    tris.Add(wallsCount + 1);
-                }
-
-                tris.Add(wallsCount + 4);
-                tris.Add(wallsCount + 7);
-                tris.Add(wallsCount + 6);
-
-                tris.Add(wallsCount + 6);
-                tris.Add(wallsCount + 5);
-                tris.Add(wallsCount + 4);
-
-                wallsCount += 8;
             }
 
+        // Aplikowanie wygenerowanej siatki
+        wallsMesh.subMeshCount = 2;
         wallsMesh.vertices = verts.ToArray();
-        wallsMesh.triangles = tris.ToArray();
+        wallsMesh.SetTriangles(tris0, 0);
+        wallsMesh.SetTriangles(tris1, 1);
 
         // Dla oświetlenia
-        wallsMesh.RecalculateNormals();
+        //wallsMesh.RecalculateNormals();
+        // Jak nie prośbą to groźbą...
+        wallsMesh.SetNormals(normals);
 
+        wallsMesh.SetUVs(0, uvs);
+
+        // Aplikowanie przygotowanej siatki do sceny
         wallsMeshFilter.mesh = wallsMesh;
     }
 }
