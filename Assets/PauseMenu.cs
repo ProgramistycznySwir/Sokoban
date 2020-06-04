@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -40,14 +41,16 @@ public class PauseMenu : MonoBehaviour
         Time.timeScale = 0f;
         isGamePaused = true;
     }
-    public void Exit() //wywala cie do glownego Menu
+    public void Exit() // Wywala cie do glownego Menu
     {
-        //Mozna dac jakas stringa zamiast "Menu", ale nie chce jeszcze bardziej zmieniac umla 
+        throw new NotImplementedException();
+        // Mozna dac jakas stringa zamiast "Menu", ale nie chce jeszcze bardziej zmieniac umla 
         SceneManager.LoadScene("Menu");
     }
+
     public void RestartGame()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name); // wczytuje aktywna scene
-        Time.timeScale = 1f;                                        //must have, inaczej gra sie pauzuje
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name); // Wczytuje aktywna scene
+        Time.timeScale = 1f;                                        // Must have, inaczej gra sie pauzuje
     }
 }

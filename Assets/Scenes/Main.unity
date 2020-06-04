@@ -548,7 +548,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 338528826}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 818399590}
+        m_MethodName: Resume
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &338528826
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1356,6 +1367,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6e48d8c3b513b9438bfa6531e1698ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pauseMenuUI: {fileID: 347585825}
 --- !u!1 &832021045
 GameObject:
   m_ObjectHideFlags: 0
@@ -1817,7 +1829,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1235851382}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 818399590}
+        m_MethodName: Exit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1235851382
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2172,7 +2195,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1499998039}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 818399590}
+        m_MethodName: RestartGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1499998039
 MonoBehaviour:
   m_ObjectHideFlags: 0
