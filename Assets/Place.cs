@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Place : MonoBehaviour
@@ -7,7 +6,7 @@ public class Place : MonoBehaviour
     static List<Place> places = new List<Place>();
 
     private bool __isOccupied;
-    public bool isOccupied { set { if (value == true) CheckIfAllOccupied(); __isOccupied = value; } }
+    public bool isOccupied { get { return __isOccupied; } set { if (value == true) CheckIfAllOccupied(); __isOccupied = value; } }
     
     void Start()
     {
@@ -19,11 +18,11 @@ public class Place : MonoBehaviour
         places.Remove(this);
     }
 
-    public bool CheckIfAllOccupied()
+    public void CheckIfAllOccupied()
     {
         foreach (Place place in places)
             if (!place.__isOccupied)
-                return false;
-        return true;
+                return;
+        
     }
 }
