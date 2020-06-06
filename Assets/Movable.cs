@@ -17,7 +17,7 @@ using UnityEngine;
 /// <summary>
 /// Script responsible for movement animations
 /// </summary>
-public class Move : MonoBehaviour
+public class Movable : MonoBehaviour
 {
     /// <summary>
     /// How fast every movable object traverses
@@ -37,28 +37,25 @@ public class Move : MonoBehaviour
     protected float wait = 0f;
 
     protected Vector3 destination;
+    protected Vector3 destinationBounce;
 
+    /*protected*/public bool bounce;
+
+    // <NOTE:UML> Jednak collider jest nie potrzebny...
+    //public Collider collider;
 
     void Update()
     {
-        // Jeśli osiągnął cel to nie ma sensu by dalej wykonywał obliczenia (jeszcze może z tego bug wyniknąć, a tego przecież nie chcemy)
-        if (!__isMoving)
-            return;
+        // Po to wyrzuciłem to do odrębnej metody bo MonoBehaviour.Update() nie jest dziedziczony.
+        Move();
+    }
 
-        // Odlicza czas do rozpoczęcia animacji
-        if (wait > 0f)
-            wait -= Time.deltaTime;
+    public void SetDestinationWithBounce(Vector3 destination, float delay = 0f)
+    {
+        bounce = true;
+        destinationBounce = transform.position;
 
-        // Transform to instancja klasy która definiuje pozycję obiektu (GameObject) w euklidesowej przestrzeni 3d, zmienna position to pozycja x,y,z.
-        // transform jest zmienną dziedziczoną z klasu MonoBehaviour tak samo jak Start() i Update().
-        // Funkcja Vector3.MoveTowards() w wygodny sposób określa wartość nowego wektora (na podstawie kierunku z 1wszego parametru do 2giego)z tym
-        // założeniem, że odległość punktu który zwraca jest w odległości nie większej niż 3ci parametr od 1wszego parametru
-        // movementSpeed jest mnożony przez Time.deltaTime by uniezależnić animację od szybkości klatek (Time.deltaTime to czas 
-        transform.position = Vector3.MoveTowards(transform.position, destination, movementSpeed * Time.deltaTime);
-
-        // Sprawdza czy obiekt osiągnął cel
-        if (transform.position == destination)
-            __isMoving = false;
+        SetDestination(destination, delay);
     }
 
     public void SetDestination(Vector3 destination, float delay)
@@ -74,5 +71,52 @@ public class Move : MonoBehaviour
     {
         __isMoving = true;
         this.destination = destination;
+    }
+
+    protected void Move()
+    {
+        // Jeśli osiągnął cel to nie ma sensu by dalej wykonywał obliczenia (jeszcze może z tego bug wyniknąć, a tego przecież nie chcemy)
+        if (!__isMoving)
+            return;
+
+        // Odlicza czas do rozpoczęcia animacji
+        if (wait > 0f)
+        {
+            wait -= Time.deltaTime;
+            return;
+        }
+
+        // Transform to instancja klasy która definiuje pozycję obiektu (GameObject) w euklidesowej przestrzeni 3d, zmienna position to pozycja x,y,z.
+        // transform jest zmienną dziedziczoną z klasu MonoBehaviour tak samo jak Start() i Update().
+        // Funkcja Vector3.MoveTowards() w wygodny sposób określa wartość nowego wektora (na podstawie kierunku z 1wszego parametru do 2giego)z tym
+        // założeniem, że odległość punktu który zwraca jest w odległości nie większej niż 3ci parametr od 1wszego parametru
+        // movementSpeed jest mnożony przez Time.deltaTime by uniezależnić animację od szybkości klatek (Time.deltaTime to czas 
+        transform.position = Vector3.MoveTowards(transform.position, destination, movementSpeed * Time.deltaTime);
+
+        // Sprawdza czy obiekt osiągnął cel
+        if (transform.position == destination && bounce)
+        {
+            bounce = false;
+            destination = destinationBounce;
+        }
+        else if (transform.position == destination)
+            __isMoving = false;
+    }
+
+    public enum CollisionInfo { Empty, Crate, Wall, CrateCrate, CrateWall}
+    public CollisionInfo CheckCollision(Vector3 direction)
+    {
+        // Musi być troche podniesiony bo wszystkie obiekty centrum 
+        Ray ray = new Ray(transform.position + Vector3.up * 0.19f, direction/*.normalized*/);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 1f))
+        {
+            // Najłatwiejszy sposób by sprawdzić czy obiekt jest 
+            if (hit.transform.GetComponent<Crate>() != null)
+                return CollisionInfo.Crate;
+            return CollisionInfo.Wall;
+        }
+
+        return CollisionInfo.Empty;
     }
 }

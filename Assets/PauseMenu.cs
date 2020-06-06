@@ -51,6 +51,6 @@ public class PauseMenu : MonoBehaviour
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name); // Wczytuje aktywna scene
-        Time.timeScale = 1f;                                        // Must have, inaczej gra sie pauzuje
+        Time.timeScale = 1f; // Must have, inaczej gra sie pauzuje
     }
 }

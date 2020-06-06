@@ -2,22 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Bez skryptu Move ani rusz (dosłownie obiekt nie będzie się poruszał)
-[RequireComponent(typeof(Move))]
-public class Player : MonoBehaviour
+
+public class Player : Movable
 {
-
-    public Move movement;
-
-    public Grid grid;
-
-
     Vector2 movementInput = Vector2.zero;
+
+    public Transform armsModel;
+
+    public bool dontTurn;
 
     // Start is called before the first frame update
     void Start()
     {
-        
     }
 
     // Update is called once per frame
@@ -29,7 +25,7 @@ public class Player : MonoBehaviour
         movementInput.x = Input.GetAxisRaw("Horizontal");
         movementInput.y = Input.GetAxisRaw("Vertical");
 
-        if(!movement.isMoving && movementInput != Vector2.zero)
+        if (!isMoving && movementInput != Vector2.zero)
         {
             Vector3 correctedMovementInput;
 
@@ -38,7 +34,54 @@ public class Player : MonoBehaviour
             else
                 correctedMovementInput = Vector3.right * (movementInput.x < 0 ? -1f : 1f);
 
-            movement.SetDestination(transform.position + correctedMovementInput);
-        }        
+
+            CollisionInfo collisionInfo = CheckCollision(correctedMovementInput);
+
+            if (collisionInfo != CollisionInfo.Crate)
+                RaiseHands(false);
+            else
+                RaiseHands(true);
+
+            if(collisionInfo == CollisionInfo.Empty)
+            {
+                SetDestination(transform.position + correctedMovementInput);
+            }
+            else if (collisionInfo == CollisionInfo.Crate)
+            {
+                SetDestination(transform.position + correctedMovementInput);
+            }
+            else if (collisionInfo == CollisionInfo.Wall)
+            {
+                SetDestinationWithBounce(transform.position + correctedMovementInput * 0.3f);
+            }
+        }
+        else if (!isMoving)
+            RaiseHands(false);
+
+        if (dontTurn == true)
+            dontTurn = false;
+
+        Move();
+    }
+
+    public override void SetDestination(Vector3 destination)
+    {
+        if (bounce)
+        {
+            dontTurn = true;
+            transform.forward = destination - transform.position;
+        }
+        else if (!dontTurn)
+            transform.forward = destination - transform.position;
+
+        base.SetDestination(destination);
+    }
+
+    public void RaiseHands(bool raiseHands)
+    {
+        if (raiseHands)
+            armsModel.localEulerAngles = Vector3.zero;
+        else
+            armsModel.localEulerAngles = new Vector3(90f, 0f, 0f);
     }
 }

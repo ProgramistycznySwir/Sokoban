@@ -16,8 +16,15 @@ public class Wall : MonoBehaviour
     public static byte outlineWidth = 1;
 
     public MeshFilter meshFilter;
-    public MeshCollider collider;
+    public new MeshCollider collider;
     
+
+    void Awake()
+    {
+        // Murki nie mogą być niższe niż 0.2f bo to wtedy bardzo źle działa z kolizjami (kolizje zachodzą na wysokości 0.19f)
+        if (wallHeight < 0.2f)
+            wallHeight = 0.2f;
+    }
 
     void Start()
     {
@@ -37,7 +44,7 @@ public class Wall : MonoBehaviour
     // robią, że oświetlenie obiektu szaleje ;/
     // Update: udało mi się jako tako naprawić oświetlenie i jest... ummm... stylistyczne? Znaczy no, nie jest źle, ale niektóre krawędzie
     // szczególnie te dobrze doświetlone są troche rozmazane.
-    // Update: ...tyle zachodu na marne, okazuje się że Unity do każdej ściany wykorzystuje nowe vertex'y (ew w przypadku współpłaszczyźnianych je dzieli)
+    // Update: ...tyle zachodu na marne... okazuje się że Unity do każdej ściany wykorzystuje nowe vertex'y (ew w przypadku współpłaszczyźnianych je dzieli)
     public void GenerateWalls(char[,] map)
     {
         Mesh mesh = new Mesh();

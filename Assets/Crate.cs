@@ -2,32 +2,38 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Move))]
-public class Crate : MonoBehaviour
-{
-    public Move movement;
 
+public class Crate : Movable
+{
     public new Renderer renderer;
 
     public bool willAchivePlace = false;
 
     public bool glowing = false;
-
-    // Start is called before the first frame update
+    
     void Start()
     {
-        Material material = renderer.materials[2];
-        material.SetColor("_EmissionColor", Color.green);
-        renderer.materials[2] = material;
+        // Podczas kompilowania gry silnik optymalizuje build zawierając tylko elementy które są obecne w jakiś sposób na scenie
+        // czyli żeby Unity zawarło moduł świecenia dla materiału Crate_Inner, musi być on aktywny na początku, więc jeśli jest
+        // tworzony obiekt to musi mieć ręcznie wyłączone świecenie :/.
+        Glow(false);
     }
-
-    // Update is called once per frame
+    
     void Update()
     {
-        if(!glowing && !movement.isMoving && willAchivePlace)
+        if (!glowing && !isMoving && willAchivePlace)
         {
             glowing = true;
-            renderer.materials[2].SetColor("_EmissionColor", Color.red);
+            Glow(true);
         }
+    }
+
+    void Glow(bool glow)
+    {
+        Material material = renderer.materials[2];
+        if (glow)
+            material.SetColor("_EmissionColor", Color.green);
+        else
+            material.SetColor("_EmissionColor", Color.black);
     }
 }
