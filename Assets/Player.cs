@@ -5,18 +5,18 @@ using UnityEngine;
 
 public class Player : Movable
 {
-    Vector2 movementInput = Vector2.zero;
-
     public Transform armsModel;
 
+    // Dla animacji podniesienia rąk
     public bool dontTurn;
+    
 
-    // Start is called before the first frame update
     void Start()
     {
     }
 
-    // Update is called once per frame
+
+    Vector2 movementInput = Vector2.zero;
     void Update()
     {
         // Input.GetAxisRaw() to funkcja Unity która odpowiada za zwrócenie wartości osi wejścia z kontrolera w przypadku PC jest to klawiatura.
@@ -37,22 +37,28 @@ public class Player : Movable
 
             CollisionInfo collisionInfo = CheckCollision(correctedMovementInput);
 
-            if (collisionInfo != CollisionInfo.Crate)
-                RaiseHands(false);
-            else
+            if (collisionInfo == CollisionInfo.Crate || collisionInfo == CollisionInfo.CrateCrate || collisionInfo == CollisionInfo.CrateWall)
                 RaiseHands(true);
+            else
+                RaiseHands(false);
 
-            if(collisionInfo == CollisionInfo.Empty)
+            switch(collisionInfo)
             {
-                SetDestination(transform.position + correctedMovementInput);
-            }
-            else if (collisionInfo == CollisionInfo.Crate)
-            {
-                SetDestination(transform.position + correctedMovementInput);
-            }
-            else if (collisionInfo == CollisionInfo.Wall)
-            {
-                SetDestinationWithBounce(transform.position + correctedMovementInput * 0.3f);
+                case CollisionInfo.Empty:
+                    SetDestination(transform.position + correctedMovementInput);
+                    break;
+                case CollisionInfo.Crate:
+                    SetDestination(transform.position + correctedMovementInput);
+                    break;
+                case CollisionInfo.CrateCrate:
+                    SetDestinationWithBounce(transform.position + correctedMovementInput * 0.475f);
+                    break;
+                case CollisionInfo.CrateWall:
+                    SetDestinationWithBounce(transform.position + correctedMovementInput * 0.375f);
+                    break;
+                case CollisionInfo.Wall:
+                    SetDestinationWithBounce(transform.position + correctedMovementInput * 0.3f);
+                    break;
             }
         }
         else if (!isMoving)
@@ -63,6 +69,7 @@ public class Player : Movable
 
         Move();
     }
+
 
     public override void SetDestination(Vector3 destination)
     {
@@ -76,6 +83,34 @@ public class Player : Movable
 
         base.SetDestination(destination);
     }
+
+
+    public override CollisionInfo CheckCollision(Vector3 direction)
+    {
+        // Musi być troche podniesiony bo wszystkie obiekty centrum 
+        Ray ray = new Ray(transform.position + Vector3.up * 0.19f, direction/*.normalized*/);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 1f))
+        {
+            Crate crate;
+            // Najłatwiejszy sposób by sprawdzić czy obiekt jest 
+            if ((crate = hit.transform.GetComponent<Crate>()) != null)
+            {
+                CollisionInfo collisionInfo = crate.CheckCollision(direction);
+                if (collisionInfo == CollisionInfo.Empty)
+                    return CollisionInfo.Crate;
+                else if (collisionInfo == CollisionInfo.Crate)
+                    return CollisionInfo.CrateCrate;
+                else
+                    return CollisionInfo.CrateWall;
+            }
+
+            return CollisionInfo.Wall;
+        }
+
+        return CollisionInfo.Empty;
+    }
+
 
     public void RaiseHands(bool raiseHands)
     {

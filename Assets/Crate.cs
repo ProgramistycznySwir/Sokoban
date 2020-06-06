@@ -26,7 +26,36 @@ public class Crate : Movable
             glowing = true;
             Glow(true);
         }
+
+        Move();
     }
+
+
+    public override CollisionInfo CheckCollision(Vector3 direction)
+    {
+        Debug.Log("I'm hewwe uwu");
+
+        // Musi być troche podniesiony bo wszystkie obiekty centrum 
+        Ray ray = new Ray(transform.position + Vector3.up * 0.19f, direction/*.normalized*/);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 1f))
+        {
+            Crate crate;
+            // Najłatwiejszy sposób by sprawdzić czy obiekt jest 
+            if ((crate = hit.transform.GetComponent<Crate>()) != null)
+            {
+                SetDestinationWithBounce(transform.position + direction * 0.2f, 0.275f / movementSpeed);
+                return CollisionInfo.Crate;
+            }
+            SetDestinationWithBounce(transform.position + direction * 0.1f, 0.275f / movementSpeed);
+            return CollisionInfo.Wall;
+        }
+        // 0.175 - długość rąk
+        // 0.4 - "promień" (połowa boku) skrzynki
+        SetDestination(transform.position + direction, 0.275f / movementSpeed);
+        return CollisionInfo.Empty;
+    }
+
 
     void Glow(bool glow)
     {

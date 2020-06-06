@@ -14,15 +14,17 @@ using UnityEngine;
 // Nasuwa się pytanie dlaczego nazwa właściwości jest pisana z małej litery?
 // Taka jest konwencja Unity.
 
+// Najlepiej jeśli będzie abstract, bo nie będzie żadnego obiektu tego typu w grze
 /// <summary>
-/// Script responsible for movement animations
+/// Script responsible for movement of objects
 /// </summary>
-public class Movable : MonoBehaviour
+public abstract class Movable : MonoBehaviour
 {
     /// <summary>
     /// How fast every movable object traverses
     /// </summary>
-    public const float movementSpeed = 3f;
+    protected static float __movementSpeed = 3f;
+    public static float movementSpeed { get { return __movementSpeed; } }
 
     /// <summary>
     /// If object reached destination is false
@@ -34,12 +36,12 @@ public class Movable : MonoBehaviour
     /// <summary>
     /// How much time (in seconds) does this object have to wait till it starts animation
     /// </summary>
-    protected float wait = 0f;
+    public float wait = 0f;
 
     protected Vector3 destination;
     protected Vector3 destinationBounce;
 
-    /*protected*/public bool bounce;
+    protected bool bounce;
 
     // <NOTE:UML> Jednak collider jest nie potrzebny...
     //public Collider collider;
@@ -104,19 +106,14 @@ public class Movable : MonoBehaviour
     }
 
     public enum CollisionInfo { Empty, Crate, Wall, CrateCrate, CrateWall}
-    public CollisionInfo CheckCollision(Vector3 direction)
-    {
-        // Musi być troche podniesiony bo wszystkie obiekty centrum 
-        Ray ray = new Ray(transform.position + Vector3.up * 0.19f, direction/*.normalized*/);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 1f))
-        {
-            // Najłatwiejszy sposób by sprawdzić czy obiekt jest 
-            if (hit.transform.GetComponent<Crate>() != null)
-                return CollisionInfo.Crate;
-            return CollisionInfo.Wall;
-        }
+    // Jest to metoda abstrakcyjna bo i Crate i Player muszą definiować 2 odrębne logiki związane z tą metodą
+    public abstract CollisionInfo CheckCollision(Vector3 direction);
 
-        return CollisionInfo.Empty;
+
+    public static void SetMovementSpeed(float speed)
+    {
+        if (speed < 0.5f)
+            speed = 0.5f;
+        __movementSpeed = speed;
     }
 }
