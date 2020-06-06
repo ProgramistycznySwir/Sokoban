@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5174156520586764101}
   - component: {fileID: 5174156520586764107}
   - component: {fileID: 5174156520586764106}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 5174156520604966420}
   - component: {fileID: 5174156520604966426}
   - component: {fileID: 5174156520604966421}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -167,7 +167,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5174156520806528947}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Arms Axis
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -199,10 +199,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5174156521572104788}
-  - component: {fileID: 4088283192595041593}
   - component: {fileID: 1771196598916750193}
-  - component: {fileID: 7345445272491224439}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -227,18 +225,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4088283192595041593
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5174156521572104791}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad08154b04fc60946bde81fcc53c0a67, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1771196598916750193
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -251,20 +237,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6bbff5bc723f4f4e954c147abfc65a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movement: {fileID: 7345445272491224439}
-  grid: {fileID: 0}
---- !u!114 &7345445272491224439
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5174156521572104791}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20788b4e45d139846bbcac78c545725a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  armsModel: {fileID: 5174156520806528947}
 --- !u!1 &5174156521946505850
 GameObject:
   m_ObjectHideFlags: 0
@@ -276,7 +249,7 @@ GameObject:
   - component: {fileID: 5174156521946505851}
   - component: {fileID: 5174156521946505849}
   - component: {fileID: 5174156521946505848}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: ArmR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -355,7 +328,7 @@ GameObject:
   - component: {fileID: 5174156522258993994}
   - component: {fileID: 5174156522258993992}
   - component: {fileID: 5174156522258993995}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Legs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -434,7 +407,7 @@ GameObject:
   - component: {fileID: 5174156522492603522}
   - component: {fileID: 5174156522492603520}
   - component: {fileID: 5174156522492603523}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: ArmL
   m_TagString: Untagged
   m_Icon: {fileID: 0}

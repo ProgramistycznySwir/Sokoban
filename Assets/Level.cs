@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.IO;
 using UnityEngine;
 
 
@@ -14,8 +13,11 @@ using UnityEngine;
 // Nasuwa się pytanie dlaczego nazwa właściwości jest pisana z małej litery?
 // Taka jest konwencja Unity.
 
-public class Map : MonoBehaviour
+public class Level : MonoBehaviour
 {
+    public static string mapsDirectory;
+
+    BasicLevelData levelData;
 
     public GameObject playerPrefab;
     public GameObject cratePrefab;
@@ -30,15 +32,13 @@ public class Map : MonoBehaviour
     // P - Player
     // C - Crate
     // X - platform
-    static char[,] map;
-
-    static List<Crate> crates = new List<Crate>();
+    char[,] map;
 
     void Awake()
     {
         __grid = grid__;
 
-        map = new char[,]{ { 'O', 'O', 'O', 'O' },
+        map = new char[,]{ { 'O', ' ', ' ', 'O' },
             { 'O', 'P', 'X', 'O' },
             { 'O', ' ', 'C', 'O' },
             { 'O', ' ', ' ', 'O' },
@@ -53,29 +53,7 @@ public class Map : MonoBehaviour
 
     void Start()
     {
-        GenerateMap();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    public enum CollisionInfo { Wall, CrateWall, Crate, Free}
-
-    /// <summary>
-    /// Only dirrection is needed cause map stores player position anyways
-    /// </summary>
-    /// <returns>Whether object can perform movement or not</returns>
-    public CollisionInfo AttemptMovement(Vector2Int dirrection) //<NOT IMPLEMENTED>
-    {
-        return CollisionInfo.Free;
-    }
-
-    public void EnlistCrate(Crate crate)
-    {
-        crates.Add(crate);
+        Initialize(new BasicLevelData());
     }
 
     public void GenerateMap() //<NOT IMPLEMENTED>
@@ -87,7 +65,7 @@ public class Map : MonoBehaviour
             for (int x = 0; x <= mapSize.x; x++)
             {
                 gridPosition = new Vector3Int(x, -y, 0);
-                switch(map[y, x])
+                switch (map[y, x])
                 {
                     case 'P':
                         Instantiate<GameObject>(playerPrefab, grid.CellToWorld(gridPosition), Quaternion.identity, transform);
@@ -109,9 +87,47 @@ public class Map : MonoBehaviour
         Camera.main.transform.position = new Vector3(mapSize.x / 2f, 6, -mapSize.y / 2f);
     }
 
+
+    public void Initialize(BasicLevelData levelData)
+    {
+        this.levelData = levelData;
+
+        LoadMapFromFile();
+
+        GenerateMap();
+    }
+
+
+    public void GameOver(bool win)
+    {
+
+    }
+
+
     public void LoadMapFromFile() //<NOT IMPLEMENTED>
     {
         // Ustawia tablicę map tak by była obecnie wybraną mapą.
+
+        //string[] lines = File.ReadAllLines(mapsDirectory + levelData.name + ".txt");
+        string[] lines = File.ReadAllLines("C:\\Programowanie Obiektowe - Projekt\\Sokoban\\TestoweMapy.txt");
+
+        foreach (string line in lines)
+            Debug.Log(line);
+
+        int longestLine = 0;
+        foreach (string line in lines)
+            if (line.Length > longestLine)
+                longestLine = line.Length;
+        map = new char[lines.Length, longestLine];
+
+        for(int y = 0; y < lines.Length; y++)
+            for(int x = 0; x < longestLine; x++)
+            {
+                if (x >= lines[y].Length)
+                    map[y, x] = ' ';
+                else
+                    map[y, x] = lines[y][x];
+            }
     }
 
 }
