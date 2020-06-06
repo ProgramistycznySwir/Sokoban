@@ -6,7 +6,7 @@ public class Place : MonoBehaviour
     static List<Place> places = new List<Place>();
 
     private bool __isOccupied;
-    public bool isOccupied { get { return __isOccupied; } set { if (value == true) CheckIfAllOccupied(); __isOccupied = value; } }
+    public bool isOccupied { get { return __isOccupied; } set { __isOccupied = value; if (value) CheckIfAllOccupied(); } }
     
     void Start()
     {
@@ -20,9 +20,10 @@ public class Place : MonoBehaviour
 
     public void CheckIfAllOccupied()
     {
+        Debug.Log("I'm beeing called " + places.Count);
         foreach (Place place in places)
             if (!place.__isOccupied)
                 return;
-        
+        Debug.Log("Game has been finished!");
     }
 }

@@ -25,18 +25,6 @@ public class Wall : MonoBehaviour
             wallHeight = 0.2f;
     }
 
-    void Start()
-    {
-        //char[,] map_ = new char[,]{ { 'O', 'O', 'O', 'O' },
-        //    { 'O', 'P', 'X', 'O' },
-        //    { 'O', ' ', 'C', 'O' },
-        //    { 'O', ' ', ' ', 'O' },
-        //    { 'O', 'O', 'O', 'O' }};
-
-        //GenerateWalls(map_);
-    }
-
-
     // Mógłbym w tym miejscu posilić się o greedy-mesh, ale sądzę że nawet jeśli będą obecne zbędne współliniowe wierzchołki to dalej będzie to
     // bardziej optymalne od tego żeby każda ściana była odrębnym obiektem.
     // Update: o ile współliniowe wierzchołki chyba nikomu nie przeszkadzają, ale takie rzeczy jak kilka vertexów w tym samym miejscu już 
@@ -58,7 +46,7 @@ public class Wall : MonoBehaviour
 
         // Normal'e - kierunki w które skierowane są powierzchnie trójkątów, potrzebne są do odpowiedniego oświetlenia obiektu
         //List<Vector3> normals = new List<Vector3>();
-        //List<Vector2> uvs = new List<Vector2>();
+        List<Vector2> uvs = new List<Vector2>();
         
         // Dla wygody
         Vector2Int mapSize = new Vector2Int(map.GetUpperBound(1), map.GetUpperBound(0));
@@ -74,6 +62,11 @@ public class Wall : MonoBehaviour
                     verts.Add(new Vector3(x, wallHeight, -y + 1)); // 1
                     verts.Add(new Vector3(x + 1, wallHeight, -y + 1)); // 2
                     verts.Add(new Vector3(x + 1, wallHeight, -y)); // 3
+
+                    uvs.Add(new Vector2(0, 0));
+                    uvs.Add(new Vector2(0, 1));
+                    uvs.Add(new Vector2(1, 1));
+                    uvs.Add(new Vector2(1, 0));
 
                     tris1.Add(vertsCount);
                     tris1.Add(vertsCount + 1);
@@ -92,6 +85,11 @@ public class Wall : MonoBehaviour
                         verts.Add(new Vector3(x + 1, wallHeight, -y)); // 3
                         verts.Add(new Vector3(x + 1, 0, -y)); // 7
                         verts.Add(new Vector3(x, 0, -y)); // 4
+
+                        uvs.Add(new Vector2(0, 0));
+                        uvs.Add(new Vector2(0, 1));
+                        uvs.Add(new Vector2(1, 1));
+                        uvs.Add(new Vector2(1, 0));
 
                         tris1.Add(vertsCount);
                         tris1.Add(vertsCount + 1);
@@ -112,6 +110,11 @@ public class Wall : MonoBehaviour
                         verts.Add(new Vector3(x, 0, -y + 1)); // 5
                         verts.Add(new Vector3(x + 1, 0, -y + 1)); // 6
 
+                        uvs.Add(new Vector2(0, 0));
+                        uvs.Add(new Vector2(0, 1));
+                        uvs.Add(new Vector2(1, 1));
+                        uvs.Add(new Vector2(1, 0));
+
                         tris1.Add(vertsCount);
                         tris1.Add(vertsCount + 1);
                         tris1.Add(vertsCount + 2);
@@ -130,6 +133,11 @@ public class Wall : MonoBehaviour
                         verts.Add(new Vector3(x + 1, wallHeight, -y + 1)); // 2
                         verts.Add(new Vector3(x + 1, 0, -y + 1)); // 6
                         verts.Add(new Vector3(x + 1, 0, -y)); // 7
+
+                        uvs.Add(new Vector2(0, 0));
+                        uvs.Add(new Vector2(0, 1));
+                        uvs.Add(new Vector2(1, 1));
+                        uvs.Add(new Vector2(1, 0));
 
                         tris1.Add(vertsCount);
                         tris1.Add(vertsCount + 1);
@@ -150,6 +158,11 @@ public class Wall : MonoBehaviour
                         verts.Add(new Vector3(x, 0, -y + 1)); // 5
                         verts.Add(new Vector3(x, wallHeight, -y + 1)); // 1
 
+                        uvs.Add(new Vector2(0, 0));
+                        uvs.Add(new Vector2(0, 1));
+                        uvs.Add(new Vector2(1, 1));
+                        uvs.Add(new Vector2(1, 0));
+
                         tris1.Add(vertsCount);
                         tris1.Add(vertsCount + 1);
                         tris1.Add(vertsCount + 2);
@@ -164,10 +177,15 @@ public class Wall : MonoBehaviour
                 else
                 {
                     // Dolna
-                    verts.Add(new Vector3(x, 0, -y)); // 0
-                    verts.Add(new Vector3(x, 0, -y + 1)); // 1
-                    verts.Add(new Vector3(x + 1, 0, -y + 1)); // 2
-                    verts.Add(new Vector3(x + 1, 0, -y)); // 3
+                    verts.Add(new Vector3(x, 0, -y)); // 4
+                    verts.Add(new Vector3(x, 0, -y + 1)); // 5
+                    verts.Add(new Vector3(x + 1, 0, -y + 1)); // 6
+                    verts.Add(new Vector3(x + 1, 0, -y)); // 7
+
+                    uvs.Add(new Vector2(0, 0));
+                    uvs.Add(new Vector2(0, 1));
+                    uvs.Add(new Vector2(1, 1));
+                    uvs.Add(new Vector2(1, 0));
 
                     tris0.Add(vertsCount);
                     tris0.Add(vertsCount + 1);
@@ -189,12 +207,12 @@ public class Wall : MonoBehaviour
 
         // Dla oświetlenia
         mesh.RecalculateNormals();
-        // Jak nie prośbą to groźbą...
-        //mesh.SetNormals(normals);
+
+        mesh.SetUVs(0, uvs);
         
         // Aplikowanie przygotowanej siatki do sceny
         meshFilter.mesh = mesh;
-        // Oraz do silnika fizycznego
+        // oraz do silnika fizycznego
         collider.sharedMesh = mesh;
     }
 }
