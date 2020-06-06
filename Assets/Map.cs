@@ -38,7 +38,7 @@ public class Map : MonoBehaviour
     {
         __grid = grid__;
 
-        map = new char[,]{ { 'O', 'O', 'O', 'O' },
+        map = new char[,]{ { 'O', ' ', ' ', 'O' },
             { 'O', 'P', 'X', 'O' },
             { 'O', ' ', 'C', 'O' },
             { 'O', ' ', ' ', 'O' },

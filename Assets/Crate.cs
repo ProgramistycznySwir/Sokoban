@@ -5,9 +5,11 @@ using UnityEngine;
 
 public class Crate : Movable
 {
+    public Place occupiedPlace;
+
     public new Renderer renderer;
 
-    public bool willAchivePlace = false;
+    public bool checkIfOccupying = false;
 
     public bool glowing = false;
     
@@ -21,10 +23,9 @@ public class Crate : Movable
     
     void Update()
     {
-        if (!glowing && !isMoving && willAchivePlace)
+        if (!isMoving && checkIfOccupying)
         {
-            glowing = true;
-            Glow(true);
+            Occupy();
         }
 
         Move();
@@ -33,16 +34,14 @@ public class Crate : Movable
 
     public override CollisionInfo CheckCollision(Vector3 direction)
     {
-        Debug.Log("I'm hewwe uwu");
-
-        // Musi być troche podniesiony bo wszystkie obiekty centrum 
+        // Musi być troche podniesiony bo wszystkie obiekty centrum mają na ziemi
         Ray ray = new Ray(transform.position + Vector3.up * 0.19f, direction/*.normalized*/);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 1f))
         {
-            Crate crate;
+            Crate crate = hit.transform.GetComponent<Crate>();
             // Najłatwiejszy sposób by sprawdzić czy obiekt jest 
-            if ((crate = hit.transform.GetComponent<Crate>()) != null)
+            if (crate)
             {
                 SetDestinationWithBounce(transform.position + direction * 0.2f, 0.275f / movementSpeed);
                 return CollisionInfo.Crate;
@@ -50,10 +49,39 @@ public class Crate : Movable
             SetDestinationWithBounce(transform.position + direction * 0.1f, 0.275f / movementSpeed);
             return CollisionInfo.Wall;
         }
+
+        checkIfOccupying = true;
         // 0.175 - długość rąk
         // 0.4 - "promień" (połowa boku) skrzynki
         SetDestination(transform.position + direction, 0.275f / movementSpeed);
         return CollisionInfo.Empty;
+    }
+
+
+    void Occupy()
+    {
+        if(occupiedPlace)
+        {
+            occupiedPlace.isOccupied = false;
+            occupiedPlace = null;
+        }
+
+        // Musi być troche podniesiony bo wszystkie obiekty centrum mają na ziemi
+        Ray ray = new Ray(transform.position + Vector3.up * 0.19f, Vector3.down/*.normalized*/);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 1f))
+        {
+            Place place = hit.transform.GetComponent<Place>();
+            if(place)
+            {
+                occupiedPlace = place;
+                place.isOccupied = true;
+            }
+
+            Glow(place);
+        }
+
+        checkIfOccupying = false;
     }
 
 

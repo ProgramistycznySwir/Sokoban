@@ -4,15 +4,26 @@ using UnityEngine;
 
 public class Place : MonoBehaviour
 {
-    // Start is called before the first frame update
+    static List<Place> places = new List<Place>();
+
+    private bool __isOccupied;
+    public bool isOccupied { set { if (value == true) CheckIfAllOccupied(); __isOccupied = value; } }
+    
     void Start()
     {
-        
+        places.Add(this);
     }
 
-    // Update is called once per frame
-    void Update()
+    void OnDestroy()
     {
-        
+        places.Remove(this);
+    }
+
+    public bool CheckIfAllOccupied()
+    {
+        foreach (Place place in places)
+            if (!place.__isOccupied)
+                return false;
+        return true;
     }
 }
