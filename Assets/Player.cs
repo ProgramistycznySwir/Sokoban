@@ -7,12 +7,18 @@ public class Player : Movable
 
     // Dla animacji podniesienia rąk
     public bool dontTurn;
-    
+
+    // Żeby dać skrzyniom czas na wykonanie pełnych animacji
+    float inputWait;
+    float inputDelay;
+
 
     void Start()
     {
+        // By nie liczyć tego za każdym razem
+        inputDelay = 0.3f / movementSpeed;
     }
-
+    
 
     Vector2 movementInput = Vector2.zero;
     void Update()
@@ -22,12 +28,13 @@ public class Player : Movable
         // Ta funkcja zwraca float, ponieważ współdziała z gałkami analogowymi kontrolerów.
         movementInput.x = Input.GetAxisRaw("Horizontal");
         movementInput.y = Input.GetAxisRaw("Vertical");
-
-        if (!isMoving && movementInput != Vector2.zero)
+        
+        
+        if (!isMoving && movementInput != Vector2.zero && inputWait < 0f)
         {
             Vector3 correctedMovementInput;
 
-            if (Mathf.Abs(movementInput.y) > Mathf.Abs(movementInput.x))
+                if (Mathf.Abs(movementInput.y) > Mathf.Abs(movementInput.x))
                 correctedMovementInput = Vector3.forward * (movementInput.y < 0 ? -1f : 1f);
             else
                 correctedMovementInput = Vector3.right * (movementInput.x < 0 ? -1f : 1f);
@@ -44,23 +51,32 @@ public class Player : Movable
             {
                 case CollisionInfo.Empty:
                     SetDestination(transform.position + correctedMovementInput);
+                    inputWait = 0;
                     break;
                 case CollisionInfo.Crate:
                     SetDestination(transform.position + correctedMovementInput);
+                    inputWait = inputDelay;
                     break;
                 case CollisionInfo.CrateCrate:
                     SetDestinationWithBounce(transform.position + correctedMovementInput * 0.475f);
+                    inputWait = inputDelay;
                     break;
                 case CollisionInfo.CrateWall:
                     SetDestinationWithBounce(transform.position + correctedMovementInput * 0.375f);
+                    inputWait = 0;
                     break;
                 case CollisionInfo.Wall:
                     SetDestinationWithBounce(transform.position + correctedMovementInput * 0.3f);
+                    inputWait = inputDelay;
                     break;
             }
         }
         else if (!isMoving)
             RaiseHands(false);
+
+
+        if (!isMoving)
+            inputWait -= Time.deltaTime;
 
         if (dontTurn == true)
             dontTurn = false;

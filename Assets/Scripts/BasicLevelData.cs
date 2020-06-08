@@ -35,16 +35,14 @@ public class BasicLevelData
     /// <param name="time"> Pass just time in which level was finished, method will sort itself out.</param>
     public void UpdateData(float time)
     {
-        if(!finished)
+        if (time < bestTime || !finished)
         {
             finished = true;
-            isDataUpdated = true;
-        }
-        if (time < bestTime)
-        {
             bestTime = time;
             isDataUpdated = true;
         }
+
+        Debug.Log(isDataUpdated);
 
         if (isDataUpdated)
             UpdateListElement();

@@ -73,8 +73,7 @@ public class Level : MonoBehaviour
         // Generowanie ścian
         wall.GenerateWalls(map);
 
-        // Tutaj wycentrowywana jest kamera
-        Camera.main.transform.position = new Vector3(mapSize.x / 2f, 6, -mapSize.y / 2f);
+        PlaceCamera(mapSize);
     }
 
 
@@ -122,4 +121,23 @@ public class Level : MonoBehaviour
             }
     }
 
+
+    /// <summary>
+    /// Calculates the best place for camera and then puts it there.
+    /// </summary>
+    void PlaceCamera(Vector2 mapSize)
+    {
+        float height;
+
+        float heightX = Mathf.Tan(Mathf.Deg2Rad * Camera.main.fieldOfView * Camera.main.aspect) * (mapSize.x + 2);
+        float heightY = Mathf.Tan(Mathf.Deg2Rad * Camera.main.fieldOfView) * (mapSize.y + 2);
+
+        if (heightX > heightY)
+            height = heightX;
+        else
+            height = heightY;
+
+        // Tutaj wycentrowywana jest kamera
+        Camera.main.transform.position = new Vector3(mapSize.x, height, -mapSize.y) / 2f;
+    }
 }

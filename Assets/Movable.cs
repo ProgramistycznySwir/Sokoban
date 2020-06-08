@@ -21,7 +21,7 @@ public abstract class Movable : MonoBehaviour
     /// <summary>
     /// How fast every movable object traverses
     /// </summary>
-    protected static float __movementSpeed = 3f;
+    protected static float __movementSpeed = 10f;
     public static float movementSpeed { get { return __movementSpeed; } }
 
     /// <summary>

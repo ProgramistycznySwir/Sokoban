@@ -97,12 +97,11 @@ public class Menu : MonoBehaviour
             GameObject newListElement = Instantiate(levelListElement, levelListContent);
             // Pozycjonowanie elementów troche podobne do CSS
             newListElement.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -(40 + i * 80));
-            // Dodawanie delegata do listy funkcji jaką ma wykonać przycisk po wciśnięciu w menu
-            // <NOTE> delegat mi tu w obu przypadkach przyjmuje 2 w obu przypadkach
+            // Dodawanie delegata do listy funkcji jaką ma wykonać przycisk po wciśnięciu w menu.
+            // Ten _index jest niezbędny bo delegaty przyjmują referencję na zmienną, nie jej kopię.
             int _index = i;
             newListElement.transform.GetComponent<Button>().onClick.AddListener(delegate { ChooseLevel(_index); });
-            //newListElement.transform.GetComponent<Button>().onClick.AddListener(() => ChooseLevel(i));
-            Debug.Log(newListElement.transform.GetComponent<Button>().onClick.GetPersistentMethodName(0));
+            // By data_ mógł później własnoręcznie aktualizować dane w menu
             data_.listElement = newListElement.transform;
             data_.UpdateListElement();
 
@@ -114,9 +113,11 @@ public class Menu : MonoBehaviour
 
     void SaveLevelList()
     {
+        Debug.Log("I'm beeing called!");
         foreach (BasicLevelData level in levels)
-            if(level.IsDataUpdated)
+            if (true)
             {
+                Debug.Log($"Updating {level.FullName}");
                 string[] lines = File.ReadAllLines(level.FullName);
                 lines[0] = (level.Finished) ? $"y {level.BestTime}" : "";
                 File.WriteAllLines(level.FullName, lines);
