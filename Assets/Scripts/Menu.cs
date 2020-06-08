@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Menu : MonoBehaviour
 {
@@ -35,33 +36,43 @@ public class Menu : MonoBehaviour
     }
 
 
+    public void ChooseLevel(int index)
+    {
+        Debug.Log(index);
+    }
+
+
     void LoadLevelList()
     {
-        // Loading data to list
         string[] filesInDirectory = Directory.GetFiles(levelsDirectory);
+
         string[] _line;
+        BasicLevelData _data;
         int i = 0;
         foreach(string file in filesInDirectory)
         {
-            Debug.Log($"File: {file}");
+            // Loading data to list
             _line = File.ReadAllLines(file)[0].Split(' ');
             if (_line.Length < 2)
-                levels.Add(new BasicLevelData(file));
+                _data = new BasicLevelData(file);
             else
-                levels.Add(new BasicLevelData(file, (_line[0] == "y" ? true : false), System.Convert.ToSingle(_line[1])));
-            Debug.Log($"Data: {levels[i++]}");
-        }
+                _data = new BasicLevelData(file, (_line[0] == "y" ? true : false), System.Convert.ToSingle(_line[1]));
+            
+            levels.Add(_data);
 
-        // Placing
-        levelListContent.sizeDelta = new Vector2(0, 80 * levels.Count);
-        i = 0;
-        foreach(BasicLevelData data in levels)
-        {
-            GameObject newElement = Instantiate(LevelListElement, levelListContent);
-            //newElement.GetComponent<RectTransform>().localPosition = new Vector3(0, -(40 + i++ * 80), 0);
-            newElement.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -(40 + i++ * 80));
-            newElement.transform.GetChild(0).GetComponent<TMPro.TextMeshProUGUI>().text = data.name;
-            newElement.transform.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>().text = $"{(data.finished ? "<color=#009500><b>Finished</b></color>" : "Not finished")}\nBest time: {data.bestTime}";
+            // Placing list elements and updating data
+            GameObject newListElement = Instantiate(LevelListElement, levelListContent);
+            // Pozycjonowanie elementów troche podobne do CSS
+            newListElement.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -(40 + i * 80));
+            // Dodawanie delegata do listy funkcji jaką ma wykonać przycisk po wciśnięciu w menu
+            // <NOTE> delegat mi tu w obu przypadkach przyjmuje 2 w obu przypadkach
+            newListElement.transform.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(delegate { ChooseLevel(i); }));
+            _data.listElement = newListElement.transform;
+            _data.UpdateListElement();
+
+            i++;
         }
+        
+        levelListContent.sizeDelta = new Vector2(0, 80 * levels.Count);
     }
 }
