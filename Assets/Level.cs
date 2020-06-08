@@ -15,7 +15,6 @@ using UnityEngine;
 
 public class Level : MonoBehaviour
 {
-    public static string mapsDirectory;
 
     BasicLevelData levelData;
 
