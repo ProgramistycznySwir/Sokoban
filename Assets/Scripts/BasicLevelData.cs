@@ -15,6 +15,7 @@ public class BasicLevelData
     public string Name { get { string[] splitedFullName = fullName.Split('\\'); return splitedFullName[splitedFullName.Length - 1].Split('.')[0]; } }
     // Czy poziom został ukończony
     bool finished;
+    public bool Finished { get { return finished; } }
     // Najlepszy czas
     float bestTime;
     public float BestTime { get { return bestTime; } }
@@ -34,18 +35,16 @@ public class BasicLevelData
     /// <param name="time"> Pass just time in which level was finished, method will sort itself out.</param>
     public void UpdateData(float time)
     {
-        if (finished)
-            if (time < bestTime)
-            {
-                bestTime = time;
-                isDataUpdated = true;
-            }
-        else
-            {
-                finished = true;
-                bestTime = time;
-                isDataUpdated = true;
-            }
+        if(!finished)
+        {
+            finished = true;
+            isDataUpdated = true;
+        }
+        if (time < bestTime)
+        {
+            bestTime = time;
+            isDataUpdated = true;
+        }
 
         if (isDataUpdated)
             UpdateListElement();
@@ -54,7 +53,7 @@ public class BasicLevelData
     public void UpdateListElement()
     {
         listElement.GetChild(0).GetComponent<TMPro.TextMeshProUGUI>().text = Name;
-        listElement.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>().text = $"{(finished ? "<color=#009500><b>Finished</b></color>" : "Not finished")}\nBest time: {bestTime}";
+        listElement.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>().text = $"{(finished ? $"<color=#009500><b>Finished</b></color>\nBest time: {bestTime.ToString("F3")}s" : "Not finished")}";
     }
 
     // Ta metoda służy wyłącznie do celów debugu
