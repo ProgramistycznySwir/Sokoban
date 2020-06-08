@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Timer : MonoBehaviour
 {
@@ -9,16 +7,17 @@ public class Timer : MonoBehaviour
     public Movable playerMovable;
 
     float time;
+    public float Time { get { return time; } }
 
     // Update is called once per frame
     void Update()
     {
-        time += Time.deltaTime;
+        time += UnityEngine.Time.deltaTime;
         Display();
     }
 
     void Display()
     {
-        text.text = time.ToString("F0") + "s";
+        text.text = time.ToString("F1") + "s";
     }
 }

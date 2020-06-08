@@ -15,7 +15,8 @@ using UnityEngine;
 
 public class Level : MonoBehaviour
 {
-    public static string mapsDirectory;
+    static Level __current;
+    static public Level current { get { return __current; } }
 
     BasicLevelData levelData;
 
@@ -28,6 +29,10 @@ public class Level : MonoBehaviour
     Grid __grid;
     public Grid grid { get { return __grid; } }
 
+    public Timer timer;
+
+    public PauseMenu pauseMenu;
+
     // O - wall
     // P - Player
     // C - Crate
@@ -37,23 +42,7 @@ public class Level : MonoBehaviour
     void Awake()
     {
         __grid = grid__;
-
-        map = new char[,]{ { 'O', ' ', ' ', 'O' },
-            { 'O', 'P', 'X', 'O' },
-            { 'O', ' ', 'C', 'O' },
-            { 'O', ' ', ' ', 'O' },
-            { 'O', 'O', 'O', 'O' }};
-
-        //map = new char[,]{ { ' ', ' ', ' ', ' ' },
-        //                   { ' ', 'O', 'O', ' ' },
-        //                   { ' ', 'O', 'O', ' ' },
-        //                   { ' ', 'O', 'O', ' ' },
-        //                   { ' ', ' ', ' ', ' ' }};
-    }
-
-    void Start()
-    {
-        Initialize(new BasicLevelData());
+        __current = this;
     }
 
     public void GenerateMap() //<NOT IMPLEMENTED>
@@ -81,6 +70,7 @@ public class Level : MonoBehaviour
                 }
             }
 
+        // Generowanie ścian
         wall.GenerateWalls(map);
 
         // Tutaj wycentrowywana jest kamera
@@ -98,35 +88,37 @@ public class Level : MonoBehaviour
     }
 
 
-    public void GameOver(bool win)
+    public void Win()
     {
+        levelData.UpdateData(timer.Time);
 
+        pauseMenu.Pause(true);
     }
 
 
-    public void LoadMapFromFile() //<NOT IMPLEMENTED>
+    public void LoadMapFromFile()
     {
         // Ustawia tablicę map tak by była obecnie wybraną mapą.
 
-        //string[] lines = File.ReadAllLines(mapsDirectory + levelData.name + ".txt");
-        string[] lines = File.ReadAllLines("C:\\Programowanie Obiektowe - Projekt\\Sokoban\\TestoweMapy.txt");
+        string[] lines = File.ReadAllLines(levelData.FullName);
 
         foreach (string line in lines)
             Debug.Log(line);
 
         int longestLine = 0;
-        foreach (string line in lines)
-            if (line.Length > longestLine)
-                longestLine = line.Length;
-        map = new char[lines.Length, longestLine];
+        for (int i = 1; i < lines.Length; i++)
+            //foreach (string line in lines)
+            if (lines[i].Length > longestLine)
+                longestLine = lines[i].Length;
+        map = new char[lines.Length - 1, longestLine];
 
-        for(int y = 0; y < lines.Length; y++)
+        for(int y = 1; y < lines.Length; y++)
             for(int x = 0; x < longestLine; x++)
             {
                 if (x >= lines[y].Length)
-                    map[y, x] = ' ';
+                    map[y - 1, x] = ' ';
                 else
-                    map[y, x] = lines[y][x];
+                    map[y - 1, x] = lines[y][x];
             }
     }
 

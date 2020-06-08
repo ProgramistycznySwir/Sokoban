@@ -1,11 +1,11 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.SceneManagement;
+﻿using UnityEngine;
 public class PauseMenu : MonoBehaviour
 {
     // Start is called before the first frame update
     public static bool isGamePaused = false;
     public GameObject pauseMenuUI;
+    public GameObject resumeButton;
+    public GameObject finishedText;
     
     
     void Update()
@@ -15,7 +15,7 @@ public class PauseMenu : MonoBehaviour
             if (isGamePaused)
                 Resume();
             else
-                Pause();
+                Pause(false);
         }
     }
     public void Resume()
@@ -25,22 +25,27 @@ public class PauseMenu : MonoBehaviour
         isGamePaused = false;
 
     }
-    void Pause()
+    public void Pause(bool gameOver)
     {
         pauseMenuUI.SetActive(true);
         Time.timeScale = 0f;
         isGamePaused = true;
+
+        if(gameOver)
+        {
+            resumeButton.SetActive(false);
+            finishedText.SetActive(true);
+        }
     }
     public void Exit() // Powrot do Menu
     {
-        throw new NotImplementedException();
-        //zla praktyka, ale nie ma znaczenia w tym przypadku  
-        SceneManager.LoadScene("Menu");
+        Time.timeScale = 1f; // Must have, inaczej gra sie pauzuje
+        Menu.main.Return(false);
     }
 
     public void RestartGame()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name); // Wczytuje aktywna scene
-        Time.timeScale = 1f; // Must have, inaczej gra sie pauzuje
+        Time.timeScale = 1f;
+        Menu.main.Return(true);
     }
 }
