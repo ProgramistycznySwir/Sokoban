@@ -18,6 +18,6 @@ public class Timer : MonoBehaviour
 
     void Display()
     {
-        text.text = time.ToString("F0") + "s";
+        text.text = time.ToString("F1") + "s";
     }
 }

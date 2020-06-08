@@ -36,7 +36,7 @@ public class Menu : MonoBehaviour
 
     // Metoda Unity wzywana kiedy obiekt jest niszczony.
     // W tym przypadku jest to najlepszy sposób by zapewnić by postęp gracza był zapisany nie wiadomo co.
-    void OnDestroy()
+    void OnApplicationQuit()
     {
         SaveLevelList();
     }
