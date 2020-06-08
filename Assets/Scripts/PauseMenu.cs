@@ -31,10 +31,10 @@ public class PauseMenu : MonoBehaviour
         Time.timeScale = 0f;
         isGamePaused = true;
     }
-    public void Exit() // Wywala cie do glownego Menu
+    public void Exit() // Powrot do Menu
     {
         throw new NotImplementedException();
-        // Mozna dac jakas stringa zamiast "Menu", ale nie chce jeszcze bardziej zmieniac umla 
+        //zla praktyka, ale nie ma znaczenia w tym przypadku  
         SceneManager.LoadScene("Menu");
     }
 
