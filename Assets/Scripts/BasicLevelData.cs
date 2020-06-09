@@ -22,6 +22,8 @@ public class BasicLevelData
 
     public Transform listElement;
 
+
+
     public BasicLevelData(string fullName = "none", bool finished = false, float bestTime = 0f)
     {
         this.finished = finished;
@@ -35,13 +37,9 @@ public class BasicLevelData
     /// <param name="time"> Pass just time in which level was finished, method will sort itself out.</param>
     public void UpdateData(float time)
     {
-        if(!finished)
+        if (time < bestTime || !finished)
         {
             finished = true;
-            isDataUpdated = true;
-        }
-        if (time < bestTime)
-        {
             bestTime = time;
             isDataUpdated = true;
         }

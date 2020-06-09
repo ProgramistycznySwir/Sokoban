@@ -21,8 +21,9 @@ public abstract class Movable : MonoBehaviour
     /// <summary>
     /// How fast every movable object traverses
     /// </summary>
+    public static readonly Vector2 movementSpeedRange = new Vector2(1f, 10f);
     protected static float __movementSpeed = 3f;
-    public static float movementSpeed { get { return __movementSpeed; } }
+    public static float movementSpeed { get { return __movementSpeed; } set { __movementSpeed = Mathf.Clamp(value, movementSpeedRange.x, movementSpeedRange.y); } }
 
     /// <summary>
     /// If object reached destination is false

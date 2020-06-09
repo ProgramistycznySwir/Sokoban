@@ -22,29 +22,37 @@ public class Menu : MonoBehaviour
     public RectTransform levelListContent;
     public GameObject levelListElement;
 
+    public Slider wallHeightSlider;
+    public TMPro.TextMeshProUGUI wallHeightText;
+    public Slider movementSpeedSlider;
+    public TMPro.TextMeshProUGUI movementSpeedText;
+
+
+
     void Awoke()
     {
         main = this;
     }
-
-    // Start is called before the first frame update
+    
     void Start()
     {
+        // Po to żeby suwaki na początku były ustawione w domyślnych wartościach
+        wallHeightSlider.value = Mathf.InverseLerp(Wall.wallHeightRange.x, Wall.wallHeightRange.y, Wall.wallHeight);
+        movementSpeedSlider.value = Mathf.InverseLerp(Movable.movementSpeedRange.x, Movable.movementSpeedRange.y, Movable.movementSpeed);
+
         LoadLevelList();
         main = this;
     }
 
     // Metoda Unity wzywana kiedy obiekt jest niszczony.
-    // W tym przypadku jest to najlepszy sposób by zapewnić by postęp gracza był zapisany nie wiadomo co.
+    // W tym przypadku jest to najlepszy sposób by zapewnić by postęp gracza był zapisany nie wiadomo co się stanie z programem.
     void OnApplicationQuit()
     {
         SaveLevelList();
     }
 
-
     public void Return(bool restart)
     {
-        SaveLevelList();
         Destroy(Level.current.gameObject);
         if (restart)
             Play();
@@ -75,6 +83,26 @@ public class Menu : MonoBehaviour
     }
 
 
+    #region >>> Settings Menu <<<
+
+    public void WallHeightSlider()
+    {
+        float value = Mathf.Lerp(Wall.wallHeightRange.x, Wall.wallHeightRange.y, wallHeightSlider.value);
+        wallHeightText.text = value.ToString("F1");
+        Wall.wallHeight = value;
+    }
+    public void MovementSpeedSlider()
+    {
+        float value = Mathf.Lerp(Movable.movementSpeedRange.x, Movable.movementSpeedRange.y, movementSpeedSlider.value);
+        movementSpeedText.text = value.ToString("F1");
+        Movable.movementSpeed = value;
+    }
+
+    #endregion
+
+
+    #region >>> Files <<<
+
     void LoadLevelList()
     {
         string[] filesInDirectory = Directory.GetFiles(levelsDirectory);
@@ -97,12 +125,11 @@ public class Menu : MonoBehaviour
             GameObject newListElement = Instantiate(levelListElement, levelListContent);
             // Pozycjonowanie elementów troche podobne do CSS
             newListElement.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -(40 + i * 80));
-            // Dodawanie delegata do listy funkcji jaką ma wykonać przycisk po wciśnięciu w menu
-            // <NOTE> delegat mi tu w obu przypadkach przyjmuje 2 w obu przypadkach
+            // Dodawanie delegata do listy funkcji jaką ma wykonać przycisk po wciśnięciu w menu.
+            // Ten _index jest niezbędny bo delegaty przyjmują referencję na zmienną, nie jej kopię.
             int _index = i;
             newListElement.transform.GetComponent<Button>().onClick.AddListener(delegate { ChooseLevel(_index); });
-            //newListElement.transform.GetComponent<Button>().onClick.AddListener(() => ChooseLevel(i));
-            Debug.Log(newListElement.transform.GetComponent<Button>().onClick.GetPersistentMethodName(0));
+            // By data_ mógł później własnoręcznie aktualizować dane w menu
             data_.listElement = newListElement.transform;
             data_.UpdateListElement();
 
@@ -115,11 +142,12 @@ public class Menu : MonoBehaviour
     void SaveLevelList()
     {
         foreach (BasicLevelData level in levels)
-            if(level.IsDataUpdated)
             {
                 string[] lines = File.ReadAllLines(level.FullName);
                 lines[0] = (level.Finished) ? $"y {level.BestTime}" : "";
                 File.WriteAllLines(level.FullName, lines);
             }
     }
+
+    #endregion
 }
