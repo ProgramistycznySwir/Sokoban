@@ -101,9 +101,6 @@ public class Level : MonoBehaviour
 
         string[] lines = File.ReadAllLines(levelData.FullName);
 
-        foreach (string line in lines)
-            Debug.Log(line);
-
         int longestLine = 0;
         for (int i = 1; i < lines.Length; i++)
             //foreach (string line in lines)

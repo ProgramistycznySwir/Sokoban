@@ -22,6 +22,8 @@ public class BasicLevelData
 
     public Transform listElement;
 
+
+
     public BasicLevelData(string fullName = "none", bool finished = false, float bestTime = 0f)
     {
         this.finished = finished;
@@ -41,8 +43,6 @@ public class BasicLevelData
             bestTime = time;
             isDataUpdated = true;
         }
-
-        Debug.Log(isDataUpdated);
 
         if (isDataUpdated)
             UpdateListElement();

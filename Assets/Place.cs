@@ -23,7 +23,6 @@ public class Place : MonoBehaviour
         foreach (Place place in places)
             if (!place.__isOccupied)
                 return;
-        Debug.Log("Game has been finished!");
         Level.current.Win();
     }
 }

@@ -9,6 +9,8 @@ public class Timer : MonoBehaviour
     float time;
     public float Time { get { return time; } }
 
+
+
     // Update is called once per frame
     void Update()
     {

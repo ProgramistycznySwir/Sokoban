@@ -3,27 +3,18 @@ using UnityEngine;
 
 public class Wall : MonoBehaviour
 {
-    // <NOTE> To będzie można sparametryzować i wrzucić do ustawień
     /// <summary>
     /// Height of the wall model
     /// </summary>
-    public static float wallHeight = 1f;
-    // <NOTE> nie wiem czy będę to jeszcze implementować
-    /// <summary>
-    /// Width of outline in units (one block is one unit)
-    /// </summary>
-    public static byte outlineWidth = 1;
+    // To musi być readonly bo struktury nie mogą mieć prefixu "const".
+    public static readonly Vector2 wallHeightRange = new Vector2(0.2f, 1f);
+    static float __wallHeight = 1f;
+    public static float wallHeight { get { return __wallHeight; } set { __wallHeight = Mathf.Clamp(value, wallHeightRange.x, wallHeightRange.y); } }
 
     public MeshFilter meshFilter;
     public new MeshCollider collider;
     
-
-    void Awake()
-    {
-        // Murki nie mogą być niższe niż 0.2f bo to wtedy bardzo źle działa z kolizjami (kolizje zachodzą na wysokości 0.19f)
-        if (wallHeight < 0.2f)
-            wallHeight = 0.2f;
-    }
+    
 
     // Mógłbym w tym miejscu posilić się o greedy-mesh, ale sądzę że nawet jeśli będą obecne zbędne współliniowe wierzchołki to dalej będzie to
     // bardziej optymalne od tego żeby każda ściana była odrębnym obiektem.
