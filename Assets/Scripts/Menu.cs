@@ -106,7 +106,16 @@ public class Menu : MonoBehaviour
     /// </summary>
     void LoadLevelList()
     {
-        string[] filesInDirectory = Directory.GetFiles(levelsDirectory);
+        string[] filesInDirectory = new string[0];
+        try
+        {
+            filesInDirectory = Directory.GetFiles(levelsDirectory);
+        }
+        catch (System.Exception exception)
+        {
+            Debug.LogError("ERROR: Menu.cs/LoadLevelList() failed to find levels folder: " + levelsDirectory + "\n" + exception.ToString() +
+               "\nFurther programm behaviour: Doesn't loaded any levels soo game is basicly useless without fixing this problem.");
+        }
 
         string[] line_;
         BasicLevelData data_;
