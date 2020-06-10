@@ -1,18 +1,18 @@
 
   OOOO          
   O  OOOOOOOOOOO
-  O    C   C C O
-  O CO C O  C  O
-  O  C C  O    O
+  O    C     C O
+  O  O   O  C  O
+  O       O    O
 OOO CO O  OOOO O
-OPOC C C  OO   O
-O    C OCO   O O
-OO  C    C C C O
+OPOC   C  OO   O
+O      OCO   O O
+OO  C    C     O
  OOOO  OOOOOOOOO
   OOO  OOO      
   O      O      
   O      O      
-  OXXXXXXO      
-  OXXXXXXO      
-  OXXXXXXO      
+  O      O      
+  OXX  XXO      
+  OXX  XXO      
   OOOOOOOO

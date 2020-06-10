@@ -1,16 +1,16 @@
 
-  	  OOOOOOO
-          O  XXXO
-      OOOOO  XXXO
-      O      XXXO
-      O  OO  XXXO
-      OO OO  XXXO
+          OOOOOOO
+          O   XXO
+      OOOOO    XO
+      O       XXO
+      O  OO    XO
+      OO OO   XXO
      OOO OOOOOOOO
-     O CCC OO    
- OOOOO  C C OOOOO
+     O C   OO    
+ OOOOO    C OOOOO
 OO   OC C   O   O
-OP C  C    C  C O
-OOOOOO CC C OOOOO
+OP C       C  C O
+OOOOOO    C OOOOO
      O C    O    
      OOOO OOO    
         O  O     

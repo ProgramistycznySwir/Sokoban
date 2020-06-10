@@ -2,11 +2,11 @@
     OOOOO             
     O   O             
     OC  O             
-  OOO  COOO           
-  O  C  C O           
+  OOO   OOO           
+  O     C O           
 OOO O OOO O     OOOOOO
-O   O OOO OOOOOOO  XXO
-O C  C             XXO
-OOOOO OOOO OPOOOO  XXO
+O   O OOO OOOOOOO   XO
+O P   C             XO
+OOOOO OOOO OOOOOO   XO
     O      OOO  OOOOOO
     OOOOOOOO          
