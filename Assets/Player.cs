@@ -24,8 +24,8 @@ public class Player : Movable
     void Update()
     {
         // Input.GetAxisRaw() to funkcja Unity która odpowiada za zwrócenie wartości osi wejścia z kontrolera w przypadku PC jest to klawiatura.
-        // "Horizontal' to klawisze 'a' (dla wartości -1f) i 'd' (dla wartości 1f), odpowiednio "Vertical" jeśli nie zostanie zmienieone w opcjach.
-        // Ta funkcja zwraca float, ponieważ współdziała z gałkami analogowymi kontrolerów.
+        // "Horizontal' to klawisze 'a' (dla wartości -1f) i 'd' (dla wartości 1f), odpowiednio "Vertical" jeśli nie zostanie zmienione w opcjach.
+        // Ta funkcja zwraca float, ponieważ współdziała z analogowymi gałkami kontrolerów.
         movementInput.x = Input.GetAxisRaw("Horizontal");
         movementInput.y = Input.GetAxisRaw("Vertical");
         

@@ -8,10 +8,7 @@ public class Timer : MonoBehaviour
 
     float time;
     public float Time { get { return time; } }
-
-
-
-    // Update is called once per frame
+    // Aktualizuje wyświetlany czas 60 razy na sekundę.
     void Update()
     {
         time += UnityEngine.Time.deltaTime;

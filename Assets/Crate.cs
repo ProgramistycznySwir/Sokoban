@@ -14,8 +14,8 @@ public class Crate : Movable
     void Start()
     {
         // Podczas kompilowania gry silnik optymalizuje build zawierając tylko elementy które są obecne w jakiś sposób na scenie
-        // czyli żeby Unity zawarło moduł świecenia dla materiału Crate_Inner, musi być on aktywny na początku, więc jeśli jest
-        // tworzony obiekt to musi mieć ręcznie wyłączone świecenie :/.
+        // czyli aby Unity zawarło moduł świecenia dla materiału Crate_Inner, musi być on aktywny na początku, więc jeśli jest
+        // tworzony obiekt to musi mieć ręcznie wyłączone świecenie.
         Glow(false);
     }
     
