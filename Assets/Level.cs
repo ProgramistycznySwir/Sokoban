@@ -142,7 +142,7 @@ public class Level : MonoBehaviour
     /// <summary>
     /// Calculates the best place for camera and then puts it there.
     /// </summary>
-    Vector3 PlaceCamera(Vector2 mapSize)
+    public Vector3 PlaceCamera(Vector2 mapSize)
     {
         float height;
 
@@ -156,4 +156,5 @@ public class Level : MonoBehaviour
 
         return new Vector3(mapSize.x, height, -mapSize.y) / 2f;
     }
+    
 }

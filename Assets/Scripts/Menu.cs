@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Menu : MonoBehaviour
 {
     public static Menu main;
-    
+
     public static string levelsDirectory = "Levels\\";
 
     public GameObject levelPrefab;
@@ -31,7 +31,7 @@ public class Menu : MonoBehaviour
     {
         main = this;
     }
-    
+
     void Start()
     {
         // Po to żeby suwaki na początku były ustawione w domyślnych wartościach
@@ -51,11 +51,11 @@ public class Menu : MonoBehaviour
 
     public void Return(bool restart)
     {
+        Destroy(Level.current.gameObject);
         if (restart)
             Play();
         else
             gameObject.SetActive(true);
-        Destroy(Level.current.gameObject);
     }
 
 
@@ -120,7 +120,7 @@ public class Menu : MonoBehaviour
         string[] line_;
         BasicLevelData data_;
         int i = 0;
-        foreach(string file in filesInDirectory)
+        foreach (string file in filesInDirectory)
         {
             try
             {
@@ -148,25 +148,25 @@ public class Menu : MonoBehaviour
 
                 i++;
             }
-            catch(System.Exception exception)
+            catch (System.Exception exception)
             {
                 Debug.LogError("ERROR: Menu.cs/LoadLevelList() failed to load data from file: " + file + "\n" + exception.ToString() +
                    "\nFurther programm behaviour: Avoided any other atempts of loading this level, but continues to try load rest of them.");
             }
         }
-        
+
         levelListContent.sizeDelta = new Vector2(0, 80 * levels.Count);
     }
 
     void SaveLevelList()
     {
         foreach (BasicLevelData level in levels)
-            if(level.IsDataUpdated)
-                {
-                    string[] lines = File.ReadAllLines(level.FullName);
-                    lines[0] = (level.Finished) ? $"y {level.BestTime}" : "";
-                    File.WriteAllLines(level.FullName, lines);
-                }
+            if (level.IsDataUpdated)
+            {
+                string[] lines = File.ReadAllLines(level.FullName);
+                lines[0] = (level.Finished) ? $"y {level.BestTime}" : "";
+                File.WriteAllLines(level.FullName, lines);
+            }
     }
 
 
