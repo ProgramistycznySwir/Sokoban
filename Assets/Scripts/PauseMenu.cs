@@ -23,7 +23,6 @@ public class PauseMenu : MonoBehaviour
         pauseMenuUI.SetActive(false);
         Time.timeScale = 1f;
         isGamePaused = false;
-
     }
     public void Pause(bool gameOver)
     {
@@ -40,12 +39,14 @@ public class PauseMenu : MonoBehaviour
     public void Exit() // Powrot do Menu
     {
         Time.timeScale = 1f; // Must have, inaczej gra sie pauzuje
+        isGamePaused = false;
         Menu.main.Return(false);
     }
 
     public void RestartGame()
     {
         Time.timeScale = 1f;
+        isGamePaused = false;
         Menu.main.Return(true);
     }
 }
