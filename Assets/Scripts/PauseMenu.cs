@@ -21,7 +21,6 @@ public class PauseMenu : MonoBehaviour
         pauseMenuUI.SetActive(false);
         Time.timeScale = 1f;
         isGamePaused = false;
-
     }
     // Ma 2 funkcje, w zaleznosci czy gra trwa czy się zakończyła. Gdy gra jest zakończona
     // to z menu pauzy znika przycisk resume i pojawia się tekst o zaliczeniu poziomu.
@@ -40,13 +39,15 @@ public class PauseMenu : MonoBehaviour
     // Powrot do Menu
     public void Exit() 
     {
-        Time.timeScale = 1f; 
+        Time.timeScale = 1f; // Must have, inaczej gra sie pauzuje
+        isGamePaused = false;
         Menu.main.Return(false);
     }
 
     public void RestartGame()
     {
         Time.timeScale = 1f;
+        isGamePaused = false;
         Menu.main.Return(true);
         isGamePaused = false;
 
