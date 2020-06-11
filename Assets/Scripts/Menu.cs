@@ -51,11 +51,11 @@ public class Menu : MonoBehaviour
 
     public void Return(bool restart)
     {
+        Destroy(Level.current.gameObject);
         if (restart)
             Play();
         else
             gameObject.SetActive(true);
-        Destroy(Level.current.gameObject);
     }
 
 
