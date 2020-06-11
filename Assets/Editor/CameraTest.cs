@@ -12,7 +12,7 @@ namespace Tests
         [Test]
         public void CameraPositionTesting()
         {
-            //inicjowanie obiektów i ustawianie wartości oczekiwanej
+            //Inicjowanie obiektów i ustawianie wartości oczekiwanej
             Vector2Int mapSize = new Vector2Int(10,10);
             Level level = new Level();
             Vector3 expected = new Vector3(5f, 10.3923054f, -5f);
