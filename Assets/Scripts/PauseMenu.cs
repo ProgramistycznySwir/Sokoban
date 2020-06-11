@@ -1,12 +1,10 @@
 ﻿using UnityEngine;
 public class PauseMenu : MonoBehaviour
 {
-    // Start is called before the first frame update
     public static bool isGamePaused = false;
     public GameObject pauseMenuUI;
     public GameObject resumeButton;
     public GameObject finishedText;
-    
     
     void Update()
     {
@@ -24,6 +22,8 @@ public class PauseMenu : MonoBehaviour
         Time.timeScale = 1f;
         isGamePaused = false;
     }
+    // Ma 2 funkcje, w zaleznosci czy gra trwa czy się zakończyła. Gdy gra jest zakończona
+    // to z menu pauzy znika przycisk resume i pojawia się tekst o zaliczeniu poziomu.
     public void Pause(bool gameOver)
     {
         pauseMenuUI.SetActive(true);
@@ -36,7 +36,8 @@ public class PauseMenu : MonoBehaviour
             finishedText.SetActive(true);
         }
     }
-    public void Exit() // Powrot do Menu
+    // Powrot do Menu
+    public void Exit() 
     {
         Time.timeScale = 1f; // Must have, inaczej gra sie pauzuje
         isGamePaused = false;
@@ -48,5 +49,7 @@ public class PauseMenu : MonoBehaviour
         Time.timeScale = 1f;
         isGamePaused = false;
         Menu.main.Return(true);
+        isGamePaused = false;
+
     }
 }

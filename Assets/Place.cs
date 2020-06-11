@@ -17,7 +17,7 @@ public class Place : MonoBehaviour
     {
         places.Remove(this);
     }
-
+    // Sprawdza czy na wszystkich platformach leżą szkrzynki, jeśli tak, to gracz wygrywa.
     public void CheckIfAllOccupied()
     {
         foreach (Place place in places)

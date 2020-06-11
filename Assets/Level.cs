@@ -69,13 +69,14 @@ public class Level : MonoBehaviour
             return;
         }
 
-        // Inicjuje mapę na podstawie wcześniej załadowanego map.
+        // Inicjuje mapę na podstawie wcześniej załadowanej mapy.
         GenerateMap();
     }
 
 
     public void Win()
     {
+        // Aktualizuje informacje o najlepszym czasie ukończenia poziomu
         levelData.UpdateData(timer.Time);
 
         pauseMenu.Pause(true);
@@ -108,7 +109,7 @@ public class Level : MonoBehaviour
 
     void GenerateMap()
     {
-        // Cała magia dzieje się tutaj, ustawiane są skrzynie, platformy, gracz, oraz generowany jest mesh ścian
+        // W tym miejscu ustawiane są skrzynie, platformy, gracz, oraz generowany jest mesh ścian
         Vector3Int gridPosition;
         Vector2Int mapSize = new Vector2Int(map.GetUpperBound(1), map.GetUpperBound(0));
         for (int y = 0; y <= mapSize.y; y++)

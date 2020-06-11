@@ -42,9 +42,6 @@ public abstract class Movable : MonoBehaviour
 
     protected bool bounce;
 
-    // <NOTE:UML> Jednak collider jest nie potrzebny...
-    //public Collider collider;
-
     void Update()
     {
         // Po to wyrzuciłem to do odrębnej metody bo MonoBehaviour.Update() nie jest dziedziczony.
@@ -55,16 +52,14 @@ public abstract class Movable : MonoBehaviour
     {
         bounce = true;
         destinationBounce = transform.position;
-
+        // Odwołanie do metody aby uniknąć powtarzania kodu
         SetDestination(destination, delay);
     }
 
     public void SetDestination(Vector3 destination, float delay)
     {
         wait = delay;
-
-        // Czemu nie napisać tych 2 linijek też tutaj tylko się odwoływać?
-        // Żeby kod był DRY.
+        // Odwołanie do metody aby uniknąć powtarzania kodu
         SetDestination(destination);
     }
 
@@ -76,7 +71,7 @@ public abstract class Movable : MonoBehaviour
 
     protected void Move()
     {
-        // Jeśli osiągnął cel to nie ma sensu by dalej wykonywał obliczenia (jeszcze może z tego bug wyniknąć, a tego przecież nie chcemy)
+        // Jeśli osiągnął cel to nie ma sensu by dalej wykonywał obliczenia.
         if (!__isMoving)
             return;
 
@@ -89,9 +84,9 @@ public abstract class Movable : MonoBehaviour
 
         // Transform to instancja klasy która definiuje pozycję obiektu (GameObject) w euklidesowej przestrzeni 3d, zmienna position to pozycja x,y,z.
         // transform jest zmienną dziedziczoną z klasu MonoBehaviour tak samo jak Start() i Update().
-        // Funkcja Vector3.MoveTowards() w wygodny sposób określa wartość nowego wektora (na podstawie kierunku z 1wszego parametru do 2giego)z tym
+        // Funkcja Vector3.MoveTowards() w wygodny sposób określa wartość nowego wektora (na podstawie kierunku z 1wszego parametru do 2giego) z tym
         // założeniem, że odległość punktu który zwraca jest w odległości nie większej niż 3ci parametr od 1wszego parametru
-        // movementSpeed jest mnożony przez Time.deltaTime by uniezależnić animację od szybkości klatek (Time.deltaTime to czas 
+        // movementSpeed jest mnożony przez Time.deltaTime by uniezależnić animację od szybkości klatek (Time.deltaTime to czas) 
         transform.position = Vector3.MoveTowards(transform.position, destination, movementSpeed * Time.deltaTime);
 
         // Sprawdza czy obiekt osiągnął cel

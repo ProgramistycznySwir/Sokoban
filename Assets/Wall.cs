@@ -14,15 +14,6 @@ public class Wall : MonoBehaviour
     public MeshFilter meshFilter;
     public new MeshCollider collider;
     
-    
-
-    // Mógłbym w tym miejscu posilić się o greedy-mesh, ale sądzę że nawet jeśli będą obecne zbędne współliniowe wierzchołki to dalej będzie to
-    // bardziej optymalne od tego żeby każda ściana była odrębnym obiektem.
-    // Update: o ile współliniowe wierzchołki chyba nikomu nie przeszkadzają, ale takie rzeczy jak kilka vertexów w tym samym miejscu już 
-    // robią, że oświetlenie obiektu szaleje ;/
-    // Update: udało mi się jako tako naprawić oświetlenie i jest... ummm... stylistyczne? Znaczy no, nie jest źle, ale niektóre krawędzie
-    // szczególnie te dobrze doświetlone są troche rozmazane.
-    // Update: ...tyle zachodu na marne... okazuje się że Unity do każdej ściany wykorzystuje nowe vertex'y (ew w przypadku współpłaszczyźnianych je dzieli)
     public void GenerateWalls(char[,] map)
     {
         Mesh mesh = new Mesh();
