@@ -464,7 +464,7 @@ MonoBehaviour:
   placePrefab: {fileID: 1219995125946067362, guid: 03dc478f4fdb76b4a80dee72ad96b1c7,
     type: 3}
   wall: {fileID: 5247524503579425837}
-  grid__: {fileID: 5247524503141273023}
+  grid: {fileID: 5247524503141273023}
   timer: {fileID: 1332293357549637373}
   pauseMenu: {fileID: 3892061117741580255}
 --- !u!1 &5247524503579425836

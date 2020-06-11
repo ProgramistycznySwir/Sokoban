@@ -1,11 +1,11 @@
 
 OOOOOOOOOOOO  
-OXX  O     OOO
-OXX  O C  C  O
-OXX  OCOOOO  O
-OXX    P OO  O
-OXX  O O  C OO
-OOOOOO OOC C O
-  O C  C C C O
+OX   O     OOO
+OX   O C  C  O
+OX   O OOOO  O
+OX     P OO  O
+OX   O O    OO
+OOOOOO OO  C O
+  O C  C     O
   O    O     O
   OOOOOOOOOOOO

@@ -7,7 +7,7 @@ public class BasicLevelData
     /// <summary>
     /// If true, this BasicLevelData has been updated and need to be overwritten in files
     /// </summary>
-    public bool IsDataUpdated;
+    public bool IsDataUpdated { get { return isDataUpdated; } }
     // Ścieżka bezwzględna pliku .txt z poziomem
     string fullName;
     public string FullName { get { return fullName; } }

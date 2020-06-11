@@ -1,14 +1,14 @@
 
-	OOOOO    
+        OOOOO    
         O   OOOOO
         O OCOO  O
         O     C O
 OOOOOOOOO OOO   O
-OXXXX  OO C  COOO
-OXXXX    C CC OO 
-OXXXX  OOC  C PO 
+OXX    OO C  COOO
+OXX      C    OO 
+OXX    OO     PO 
 OOOOOOOOO  C  OO 
-        O C C  O 
+        O      O 
         OOO OO O 
           O    O 
           OOOOOO 

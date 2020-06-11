@@ -6,14 +6,12 @@ using UnityEngine.UI;
 public class Menu : MonoBehaviour
 {
     public static Menu main;
-
-    public static string levelsDirectory = "C:\\Programowanie Obiektowe - Projekt\\Sokoban\\Levels\\";
-    static string defaultLevelsDirectory;
+    
+    public static string levelsDirectory = "Levels\\";
 
     public GameObject levelPrefab;
 
     BasicLevelData choosenLevel;
-    //bool isLevelChoosen;
     public TMPro.TextMeshProUGUI choosenLevelText;
     public Button playButton;
 
@@ -53,11 +51,11 @@ public class Menu : MonoBehaviour
 
     public void Return(bool restart)
     {
-        Destroy(Level.current.gameObject);
         if (restart)
             Play();
         else
             gameObject.SetActive(true);
+        Destroy(Level.current.gameObject);
     }
 
 
@@ -103,37 +101,58 @@ public class Menu : MonoBehaviour
 
     #region >>> Files <<<
 
+    /// <summary>
+    /// 
+    /// </summary>
     void LoadLevelList()
     {
-        string[] filesInDirectory = Directory.GetFiles(levelsDirectory);
+        string[] filesInDirectory = new string[0];
+        try
+        {
+            filesInDirectory = Directory.GetFiles(levelsDirectory);
+        }
+        catch (System.Exception exception)
+        {
+            Debug.LogError("ERROR: Menu.cs/LoadLevelList() failed to find levels folder: " + levelsDirectory + "\n" + exception.ToString() +
+               "\nFurther programm behaviour: Doesn't loaded any levels soo game is basicly useless without fixing this problem.");
+        }
 
         string[] line_;
         BasicLevelData data_;
         int i = 0;
         foreach(string file in filesInDirectory)
         {
-            // Loading data to list
-            line_ = File.ReadAllLines(file)[0].Split(' ');
-            if (line_.Length < 2)
-                data_ = new BasicLevelData(file);
-            else
-                data_ = new BasicLevelData(file, (line_[0] == "y" ? true : false), System.Convert.ToSingle(line_[1]));
-            
-            levels.Add(data_);
+            try
+            {
+                // Loading data to list
+                line_ = File.ReadAllLines(file)[0].Split(' ');
+                if (line_.Length < 2)
+                    data_ = new BasicLevelData(file);
+                else
+                    data_ = new BasicLevelData(file, (line_[0] == "y" ? true : false), System.Convert.ToSingle(line_[1]));
 
-            // Placing list elements and updating data
-            GameObject newListElement = Instantiate(levelListElement, levelListContent);
-            // Pozycjonowanie elementów troche podobne do CSS
-            newListElement.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -(40 + i * 80));
-            // Dodawanie delegata do listy funkcji jaką ma wykonać przycisk po wciśnięciu w menu.
-            // Ten _index jest niezbędny bo delegaty przyjmują referencję na zmienną, nie jej kopię.
-            int _index = i;
-            newListElement.transform.GetComponent<Button>().onClick.AddListener(delegate { ChooseLevel(_index); });
-            // By data_ mógł później własnoręcznie aktualizować dane w menu
-            data_.listElement = newListElement.transform;
-            data_.UpdateListElement();
+                // Placing list elements and updating data
+                GameObject newListElement = Instantiate(levelListElement, levelListContent);
+                // Pozycjonowanie elementów troche podobne do CSS
+                newListElement.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -(40 + i * 80));
+                // Dodawanie delegata do listy funkcji jaką ma wykonać przycisk po wciśnięciu w menu.
+                // Ten _index jest niezbędny bo delegaty przyjmują referencję na zmienną, nie jej kopię.
+                int _index = i;
+                newListElement.transform.GetComponent<Button>().onClick.AddListener(delegate { ChooseLevel(_index); });
+                // By data_ mógł później własnoręcznie aktualizować dane w menu
+                data_.listElement = newListElement.transform;
+                data_.UpdateListElement();
 
-            i++;
+
+                levels.Add(data_);
+
+                i++;
+            }
+            catch(System.Exception exception)
+            {
+                Debug.LogError("ERROR: Menu.cs/LoadLevelList() failed to load data from file: " + file + "\n" + exception.ToString() +
+                   "\nFurther programm behaviour: Avoided any other atempts of loading this level, but continues to try load rest of them.");
+            }
         }
         
         levelListContent.sizeDelta = new Vector2(0, 80 * levels.Count);
@@ -142,12 +161,25 @@ public class Menu : MonoBehaviour
     void SaveLevelList()
     {
         foreach (BasicLevelData level in levels)
-            {
-                string[] lines = File.ReadAllLines(level.FullName);
-                lines[0] = (level.Finished) ? $"y {level.BestTime}" : "";
-                File.WriteAllLines(level.FullName, lines);
-            }
+            if(level.IsDataUpdated)
+                {
+                    string[] lines = File.ReadAllLines(level.FullName);
+                    lines[0] = (level.Finished) ? $"y {level.BestTime}" : "";
+                    File.WriteAllLines(level.FullName, lines);
+                }
     }
 
+
+
     #endregion
+}
+
+public class UnasignedBasicLevelDataException : System.Exception
+{
+    public string message;
+
+    public UnasignedBasicLevelDataException(string message)
+    {
+
+    }
 }
