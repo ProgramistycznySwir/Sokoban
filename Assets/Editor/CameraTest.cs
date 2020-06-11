@@ -10,6 +10,7 @@ namespace Tests
     {
         
         [Test]
+        // Sprawdza czy metoda PlaceCamera zwraca odpowiednią wartość, gdy mapSize.x = 10 i mapSize.y = 10
         public void CameraPositionTesting()
         {
             // Inicjowanie obiektów i ustawienie wartości oczekiwanej
